@@ -1,0 +1,88 @@
+
+
+.theme-header {
+  position: relative;
+  color: white;
+}
+
+.header-overlay {
+  display: flex;
+  gap: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%; 
+  align-items: center;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+}
+.tour-plan-count {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: white;
+
+}
+
+.theme-name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ef156c;
+}
+
+.starting-price {
+  font-size: 1.2rem;
+  margin: 0;
+  color: white;
+
+}
+
+.theme-description {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.theme-description.collapsed {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.theme-description.expanded {
+  max-height: none;
+}
+
+.read-more-toggle {
+  color: #ef156c;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.table-striped th,
+.table-striped td {
+  /* text-align: center; */
+  vertical-align: middle;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.col-md-6 {
+  flex: 1 1 calc(50% - 20px);
+}
+
+.col-lg-4 {
+  flex: 1 1 calc(33.33% - 20px);
+}
+
+@media (max-width: 768px) {
+  .header-overlay {
+   display: flex;
+   flex-direction: column;
+  }
+}
