@@ -295,7 +295,7 @@ const PackagePage = () => {
 
     // Generate and return the image URL for each image
     return `${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(
-      tourCode?.toLowerCase() || ""
+      tourCode?.toUpperCase() || ""
     )}&fileName=${encodeURIComponent(fileName || "")}`;
   });
 

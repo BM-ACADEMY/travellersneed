@@ -29,7 +29,7 @@ const PackageCard = ({ tourPlan }) => {
   const lowerCaseTourCode = tourCode.toLowerCase();
   // Construct the image URL dynamically
   const imageUrl =`${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(
-    tourCode?.toLowerCase() || ""
+    tourCode?.toUpperCase() || ""
   )}&fileName=${encodeURIComponent(fileName || "")}`;
 
   return (

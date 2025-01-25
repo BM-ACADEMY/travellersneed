@@ -22,13 +22,13 @@ const Dashboard = ({ userId }) => {
   const [limit] = useState(10); // Items per page
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-
+  var BASE_URL = import.meta.env.VITE_BASE_URL;
   // Fetch data from API
   const fetchData = async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(
-        `http://localhost:3000/api/bookings/get-all-booking-by-userId-for-dashboard/${user.userId}?page=${page}&limit=${limit}`
+        `${BASE_URL}/bookings/get-all-booking-by-userId-for-dashboard/${user.userId}?page=${page}&limit=${limit}`
       );
       fetchAllBookingsByUserIdForDashboard(user.userId,page,limit)
       if (data) {

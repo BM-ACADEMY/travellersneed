@@ -8,6 +8,7 @@ const PlaceCard = ({ place, index, totalCount, onViewDetails }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const descriptionRef = useRef(null);
   const navigate = useNavigate();
+  
   var BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const constructImageURL = (imagePath) => {

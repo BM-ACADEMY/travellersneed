@@ -56,7 +56,7 @@ const TourPlanDetails = ({ tourPlan }) => {
   const packageImageURLs = (imagePath) => {
     if (!imagePath) return "placeholder.jpg";
     const [tourCode, fileName] = imagePath.split("\\");
-    return `${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(tourCode?.toLowerCase() || "")}&fileName=${encodeURIComponent(fileName || "")}`;
+    return `${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(tourCode || "")}&fileName=${encodeURIComponent(fileName || "")}`;
   };
 
   useEffect(() => {

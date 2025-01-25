@@ -214,6 +214,7 @@ exports.getImage = async (req, res) => {
       title.replace(/ /g, "_"),
       fileName
     );
+console.log(filePath,'blog');
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: "Image not found." });

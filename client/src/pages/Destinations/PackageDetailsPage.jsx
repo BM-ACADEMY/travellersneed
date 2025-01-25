@@ -172,7 +172,7 @@ const PackageDetailsPage = () => {
   };
 
   const handleNavigateToTourPlan = () => {
-    navigator(`/state/${encodeURIComponent(stateName)}`);
+    navigator(`/tour-packages/${encodeURIComponent(stateName)}`);
   };
   const renderContent = () => {
     if (loading) {

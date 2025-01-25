@@ -44,7 +44,7 @@ const Header = ({ toggleSidebar }) => {
           >
             <FontAwesomeIcon icon={faBars} className="fs-3 menu-icon" />
           </button>
-          <h4>{componentName ? `Welcome to ${componentName}` : "Welcome!"}</h4>
+          <h4 style={{ color: "#ef156c" }}>{componentName ? `Welcome to ${componentName}` : "Welcome!"}</h4>
         </div>
 
         {/* Right side: Search, Notifications, User Profile */}

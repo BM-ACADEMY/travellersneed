@@ -272,18 +272,28 @@ exports.getAllBookingsForBookingPage = async (req, res) => {
   try {
     const { page = 1, limit = 10, searchTerm = "" } = req.query;
     const today = new Date();
-
     const currentDate = new Date();
     const lastWeek = new Date(currentDate.setDate(currentDate.getDate() - 7));
+    const exchangeRate = 82; // Example exchange rate: $1 = ₹82
+
+    // Helper function to calculate percentage increase
+    const calculatePercentageIncrease = (currentValue, previousValue) => {
+      if (previousValue === 0) {
+        return "N/A"; // Avoid division by zero
+      }
+      const increase = ((currentValue - previousValue) / previousValue) * 100;
+      return increase > 100 ? "100%" : `${increase.toFixed(2)}%`; // Cap at 100%
+    };
 
     // 1. Total Bookings Count and Percentage Increase
     const totalBookings = await Booking.countDocuments();
     const bookingsLastWeek = await Booking.countDocuments({
       createdAt: { $gte: lastWeek },
     });
-    const bookingsPercentageIncrease = bookingsLastWeek
-      ? ((totalBookings - bookingsLastWeek) / bookingsLastWeek) * 100
-      : 0;
+    const bookingsPercentageIncrease = calculatePercentageIncrease(
+      totalBookings,
+      bookingsLastWeek
+    );
 
     // 2. Total Participants Count and Percentage Increase
     const totalParticipants = await Booking.aggregate([
@@ -295,13 +305,12 @@ exports.getAllBookingsForBookingPage = async (req, res) => {
       },
       { $group: { _id: null, total: { $sum: "$adultCount" } } },
     ]);
-    const participantsPercentageIncrease = totalParticipantsLastWeek[0]?.total
-      ? ((totalParticipants[0]?.total - totalParticipantsLastWeek[0]?.total) /
-          totalParticipantsLastWeek[0]?.total) *
-        100
-      : 0;
+    const participantsPercentageIncrease = calculatePercentageIncrease(
+      totalParticipants[0]?.total || 0,
+      totalParticipantsLastWeek[0]?.total || 0
+    );
 
-    // 3. Total Earnings and Percentage Increase
+    // 3. Total Earnings and Percentage Increase (converted to INR)
     const totalEarnings = await Booking.aggregate([
       { $group: { _id: null, total: { $sum: "$price" } } },
     ]);
@@ -311,121 +320,101 @@ exports.getAllBookingsForBookingPage = async (req, res) => {
       },
       { $group: { _id: null, total: { $sum: "$price" } } },
     ]);
-    const earningsPercentageIncrease = totalEarningsLastWeek[0]?.total
-      ? ((totalEarnings[0]?.total - totalEarningsLastWeek[0]?.total) /
-          totalEarningsLastWeek[0]?.total) *
-        100
-      : 0;
+
+    const totalEarningsInINR = totalEarnings[0]?.total * exchangeRate || 0;
+    const totalEarningsLastWeekInINR =
+      totalEarningsLastWeek[0]?.total * exchangeRate || 0;
+
+    const earningsPercentageIncrease = calculatePercentageIncrease(
+      totalEarningsInINR,
+      totalEarningsLastWeekInINR
+    );
 
     // Format the stats data for the response
     const stats = [
       {
         title: "Total Bookings",
         value: totalBookings.toLocaleString(),
-        percentage: `${bookingsPercentageIncrease.toFixed(2)}%`,
+        percentage: bookingsPercentageIncrease,
         percentageColor:
-          bookingsPercentageIncrease > 0 ? "text-success" : "text-danger",
-        chartData: [800, 950, 1200, 1100, 1300], // Example data, replace with actual data as needed
+          bookingsPercentageIncrease !== "N/A" && parseFloat(bookingsPercentageIncrease) > 0
+            ? "text-success"
+            : "text-danger",
+        chartData: [800, 950, 1200, 1100, 1300], // Example data
       },
       {
         title: "Total Participants",
-        value: totalParticipants[0]?.total.toLocaleString(),
-        percentage: `${participantsPercentageIncrease.toFixed(2)}%`,
+        value: totalParticipants[0]?.total.toLocaleString() || "0",
+        percentage: participantsPercentageIncrease,
         percentageColor:
-          participantsPercentageIncrease > 0 ? "text-success" : "text-danger",
-        chartData: [3000, 2900, 2845, 2700, 2650], // Example data, replace with actual data as needed
+          participantsPercentageIncrease !== "N/A" &&
+          parseFloat(participantsPercentageIncrease) > 0
+            ? "text-success"
+            : "text-danger",
+        chartData: [3000, 2900, 2845, 2700, 2650], // Example data
       },
       {
-        title: "Total Earnings",
-        value: `$${totalEarnings[0]?.total.toLocaleString()}`,
-        percentage: `${earningsPercentageIncrease.toFixed(2)}%`,
+        title: "Total Earnings (INR)",
+        value: `₹${totalEarningsInINR.toLocaleString()}`,
+        percentage: earningsPercentageIncrease,
         percentageColor:
-          earningsPercentageIncrease > 0 ? "text-success" : "text-danger",
-        chartData: [12000, 13000, 14000, 14500, 14795], // Example data, replace with actual data as needed
+          earningsPercentageIncrease !== "N/A" &&
+          parseFloat(earningsPercentageIncrease) > 0
+            ? "text-success"
+            : "text-danger",
+        chartData: [12000, 13000, 14000, 14500, 14795], // Example data
       },
     ];
 
     // 4. Top 5 Packages Based on Booking Count
     const topPackages = await Booking.aggregate([
-      // Group by packageId and count the number of bookings
-      {
-        $group: {
-          _id: "$packageId",
-          count: { $sum: 1 },
-        },
-      },
-
-      // Sort by the count in descending order to get the most booked packages first
-      {
-        $sort: { count: -1 },
-      },
-
-      // Limit to top 5 packages
-      {
-        $limit: 5,
-      },
-
-      // Lookup to get package details from the tourplans collection
+      { $group: { _id: "$packageId", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
       {
         $lookup: {
-          from: "tourplans", // Name of the collection with package details
+          from: "tourplans",
           localField: "_id",
           foreignField: "_id",
           as: "packageDetails",
         },
       },
-
-      // Unwind to flatten the array for package details
-      {
-        $unwind: "$packageDetails",
-      },
-
-      // Calculate the percentage and format the final output
+      { $unwind: "$packageDetails" },
       {
         $project: {
-          packageName: "$packageDetails.title", // Extract package title
-          totalParticipants: "$count", // Total participants (booking count)
-          packageId: "$_id", // Package ID for debugging
+          packageName: "$packageDetails.title",
+          totalParticipants: "$count",
+          packageId: "$_id",
           percentage: {
-            $multiply: [
-              { $divide: ["$count", totalBookings] }, // Divide count by total bookings
-              100, // Multiply by 100 to get the percentage
-            ],
+            $multiply: [{ $divide: ["$count", totalBookings] }, 100],
           },
         },
       },
     ]);
 
-    const currentYear = new Date().getFullYear(); // Get the current year
+    const currentYear = new Date().getFullYear();
 
     // Aggregation to get the booking count per month
     const result = await Booking.aggregate([
-      // Step 1: Extract the year and month from the createdAt field
       {
         $project: {
-          year: { $year: "$createdAt" }, // Extract the year from the createdAt field
-          month: { $month: "$createdAt" }, // Extract the month from the createdAt field
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
         },
       },
-      {
-        $match: {
-          year: currentYear, // Only consider bookings for the current year
-        },
-      },
+      { $match: { year: currentYear } },
       {
         $group: {
-          _id: { month: "$month" }, // Group by month
-          bookingCount: { $sum: 1 }, // Count the number of bookings for each month
+          _id: { month: "$month" },
+          bookingCount: { $sum: 1 },
         },
       },
-      {
-        $sort: { "_id.month": 1 }, // Sort the results by month in ascending order
-      },
+      { $sort: { "_id.month": 1 } },
       {
         $project: {
-          month: "$_id.month", // Get the month
-          bookingCount: 1, // Include the booking count
-          _id: 0, // Exclude the _id field
+          month: "$_id.month",
+          bookingCount: 1,
+          _id: 0,
         },
       },
     ]);
@@ -448,7 +437,7 @@ exports.getAllBookingsForBookingPage = async (req, res) => {
 
     const data = [...Array(12).keys()].map((i) => {
       const monthData = result.find((b) => b.month === i + 1);
-      return monthData ? monthData.bookingCount : 0; // Default to 0 if no data for that month
+      return monthData ? monthData.bookingCount : 0;
     });
 
     const bookingAnalytics = {
@@ -469,10 +458,10 @@ exports.getAllBookingsForBookingPage = async (req, res) => {
     // Get Paginated Bookings
     const bookings = await Booking.find(searchQuery)
       .populate("userId", "username email")
-      .populate("packageId", "title price duration") // Ensure you populate the tour plan details
+      .populate("packageId", "title price duration")
       .skip((page - 1) * limit)
       .limit(Number(limit))
-      .sort({ createdAt: -1 }); // Sort by most recent bookings
+      .sort({ createdAt: -1 });
 
     res.status(201).json({
       message: "All bookings retrieved successfully",
@@ -485,3 +474,5 @@ exports.getAllBookingsForBookingPage = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+

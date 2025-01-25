@@ -924,7 +924,7 @@ exports.deleteTourPlan = async (req, res) => {
 exports.getTourPlanImage = async (req, res) => {
   try {
     const { tourCode, fileName } = req.query;
-    const filePath = path.join(UPLOADS_ROOT, tourCode, fileName);
+    const filePath = path.join(UPLOADS_ROOT, tourCode.toUpperCase(), fileName);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: "Image not found" });

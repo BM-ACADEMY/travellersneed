@@ -169,7 +169,7 @@ const Navbar = () => {
                     <li key={index}>
                       <Link
                         className="dropdown-item hover-underline"
-                        to={`/tour-packages/${encodeURIComponent(dest.cityName)}`}
+                        to={`/tour-packages/${dest.cityName}`}
                       >
                         {dest.cityName}
                       </Link>
@@ -199,7 +199,7 @@ const Navbar = () => {
                     <li key={index}>
                       <Link
                         className="dropdown-item hover-underline"
-                        to={`/tour-packages/${encodeURIComponent(dest.cityName)}`}
+                        to={`/tour-packages/${dest.cityName}`}
                       >
                         {dest.cityName}
                       </Link>
