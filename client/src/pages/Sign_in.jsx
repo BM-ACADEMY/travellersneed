@@ -143,7 +143,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
           {/* Form Section */}
           <Grid item xs={12} md={6}>
             <Box sx={{ width: "100%", maxWidth: 400, margin: "0 auto" }}>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="warning"
                 fullWidth
@@ -161,7 +161,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
                 sx={{ mb: 4 }}
               >
                 Sign In with Facebook
-              </Button>
+              </Button> */}
               <form onSubmit={handleSubmit}>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <TextField

@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-
+const path =require('path');
 // Import routes
 const userRoutes = require('./Routes/userRoutes');
 const themesRoutes = require('./Routes/themesRoutes');
@@ -73,9 +73,12 @@ app.use("/uploads", express.static("uploads/state"));
 app.get('/', (req, res) => {
   res.send('Welcome to the Express.js API!');
 });
+app.use(express.static(path.join(__dirname, 'dist')));
+
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

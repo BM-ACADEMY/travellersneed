@@ -154,7 +154,7 @@ const Sign_up = ({ open, onClose, onSignInClick }) => {
               <Typography variant="h4" className="text-center mb-4" gutterBottom>
                 SIGN UP
               </Typography>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="warning"
                 fullWidth
@@ -171,7 +171,7 @@ const Sign_up = ({ open, onClose, onSignInClick }) => {
                 sx={{ mb: 4 }}
               >
                 Sign Up with Facebook
-              </Button>
+              </Button> */}
               <form onSubmit={handleSubmit}>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <TextField
