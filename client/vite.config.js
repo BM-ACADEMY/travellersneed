@@ -6,7 +6,7 @@ dotenv.config();
 
 export default defineConfig({
   plugins: [react()],
-  
+  base: '/',
   optimizeDeps: {
     force: true, // Ensures dependencies are always optimized on start
     include: ["lightbox2","jquery"], // Add any problematic dependencies here
