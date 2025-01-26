@@ -18,6 +18,8 @@ import QuoteForm from "../../model/QuoteForm";
 const StatePage = () => {
   const { stateName } = useParams();
   const decodedStateName = decodeURIComponent(stateName);
+  console.log(decodedStateName,'decode');
+  
   const location = useLocation();
   const navigate = useNavigate();
   const [stateData, setStateData] = useState(null);
@@ -208,7 +210,7 @@ const StatePage = () => {
   const stateImagePath = stateData.images?.[0] || "";
   const parts = stateImagePath.split("\\"); // Split path by backslashes
   let fileName = "";
-  let stateQuery = decodedStateName.toLowerCase(); // Use stateName from URL params
+  let stateQuery = stateName; // Use stateName from URL params
 
   if (parts.length >= 2) {
     fileName = parts.pop(); // Extract the file name
