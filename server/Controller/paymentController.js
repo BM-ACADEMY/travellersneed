@@ -24,16 +24,83 @@ exports.createPayment = async (req, res) => {
 };
 
 // 2. Get all payments
+// exports.getAllPayments = async (req, res) => {
+//   try {
+//     const payments = await Payment.find()
+//       .populate("bookingId", "orderId price")
+//       .populate("userId", "name email");
+//     res.json({ message: "All payments retrieved", payments });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find()
+    const { page = 1, limit = 10, filter = "all" } = req.query;
+
+    const today = new Date();
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+    const startOfLastWeek = new Date(new Date().setDate(today.getDate() - 7));
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // Define the date filter based on the query parameter
+    let dateFilter = {};
+    if (filter === "today") {
+      dateFilter = { createdAt: { $gte: startOfToday } };
+    } else if (filter === "lastWeek") {
+      dateFilter = { createdAt: { $gte: startOfLastWeek } };
+    } else if (filter === "month") {
+      dateFilter = { createdAt: { $gte: startOfMonth } };
+    }
+
+    // Get filtered payment data with pagination
+    const payments = await Payment.find(dateFilter)
       .populate("bookingId", "orderId price")
-      .populate("userId", "name email");
-    res.json({ message: "All payments retrieved", payments });
+      .populate("userId", "username email")
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 });
+
+    // Calculate counts and stats
+    const totalPayments = await Payment.countDocuments(); // Total payments
+    const filteredPaymentsCount = await Payment.countDocuments(dateFilter); // Payments matching the filter
+    const todayPaymentsCount = await Payment.countDocuments({
+      createdAt: { $gte: startOfToday },
+    });
+    const totalFailedPayments = await Payment.countDocuments({
+      status: "Failed",
+    });
+    const totalConfirmedPayments = await Payment.countDocuments({
+      status: "Completed",
+    });
+
+    // Create the stats object in the desired format
+    const stats = [
+      { title: "Total Payments", count: totalPayments },
+      { title: "Today's Payments", count: todayPaymentsCount },
+      { title: "Filtered Payments", count: filteredPaymentsCount },
+      { title: "Failed Payments", count: totalFailedPayments },
+      { title: "Confirmed Payments", count: totalConfirmedPayments },
+    ];
+
+    // Send response
+    res.status(201).json({
+      message: "All payments retrieved successfully",
+      stats,
+      payments,
+      pagination: {
+        currentPage: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(filteredPaymentsCount / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 
 // 3. Get a payment by ID
 exports.getPaymentById = async (req, res) => {
@@ -47,7 +114,7 @@ exports.getPaymentById = async (req, res) => {
       return res.status(404).json({ message: "Payment not found" });
     }
 
-    res.json({ message: "Payment retrieved successfully", payment });
+    res.status(201).json({ message: "Payment retrieved successfully", payment });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -69,7 +136,7 @@ exports.updatePaymentStatus = async (req, res) => {
       return res.status(404).json({ message: "Payment not found" });
     }
 
-    res.json({ message: "Payment status updated successfully", payment: updatedPayment });
+    res.status(201).json({ message: "Payment status updated successfully", payment: updatedPayment });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -85,7 +152,7 @@ exports.deletePayment = async (req, res) => {
       return res.status(404).json({ message: "Payment not found" });
     }
 
-    res.json({ message: "Payment deleted successfully" });
+    res.status(201).json({ message: "Payment deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

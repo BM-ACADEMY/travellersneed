@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faCalendar, faUsers, faChartBar, faBriefcase, faComments, faCog,faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faCalendar, faUsers, faChartBar, faBriefcase, faComments, faCog,faLocationDot,faWallet } from "@fortawesome/free-solid-svg-icons";
 import { Offcanvas } from "react-bootstrap"; 
 import logo from "../../../images/logo.png"; 
 import './Sidebar.css';
@@ -14,6 +14,7 @@ const sidebarItems = [
   { title: "Tour Packages", icon: faBriefcase, link: "/admin-panel/tour-packages" },
   { title: "Blog", icon: faBriefcase, link: "/admin-panel/blog" },
   { title: "Address", icon: faLocationDot, link: "/admin-panel/address" },
+  { title: "Payment Details", icon: faWallet, link: "/admin-panel/payment" },
   { title: "Feedback", icon: faComments, link: "/admin-panel/feedback" },
   { title: "Support", icon: faComments, link: "/admin-panel/support" },
   { title: "Settings", icon: faCog, link: "/admin-panel/settings" },

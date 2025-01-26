@@ -99,6 +99,7 @@ import Address from "../admin/users/pages/Address";
 import "./AdminModule.css";
 import {jwtDecode} from "jwt-decode";
 import Blog from "./users/pages/Blog";
+import PaymentPage from "../admin/users/pages/PaymentPage";
 
 function AdminModule() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -165,6 +166,7 @@ function AdminModule() {
           <Route path="settings" element={<Settings />} />
           <Route path="blog" element={<Blog />} />
           <Route path="address" element={<Address />} />
+          <Route path="payment" element={<PaymentPage />} />
         </Routes>
       </div>
     </div>
