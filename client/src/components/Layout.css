@@ -1,0 +1,5 @@
+/* Ensure the main content doesn't overlap the sticky header */
+.scrollable-main {
+    padding-top: 70px; /* Adjust according to your header's height */
+  }
+  

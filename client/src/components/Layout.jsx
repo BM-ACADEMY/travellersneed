@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
-import axios from 'axios';
+import './Layout.css';
 import {fetchAllAddressesTourType} from "../modules/admin/services/ApiService";
 const Layout = () => {
   const themes = ["Honeymoon", "HillStations", "Wildlife", "Pilgrimage", "Beach", "Heritage"];

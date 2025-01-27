@@ -44,93 +44,91 @@ const Footer = ({ themes, topPackages, internationalDestinations, pages }) => {
       <div className="container-fluid py-5">
         <div className="row">
           {/* Explore Section */}
-          <div className="col-md-3">
-            <h5 className="fw-bold">Explore</h5>
-            <ul className="list-unstyled">
-              <li>
-                <Link to="/" className="footer-link">
-                  Tour Packages
-                </Link>
-              </li>
-              <li>
-                <Link to="/destinations" className="footer-link">
-                  Destinations
-                </Link>
-              </li>
-              <li>
-                <Link to="/getaways" className="footer-link">
-                  Getaways
-                </Link>
-              </li>
-              {/* <li>
-                <Link to="/cabs" className="footer-link">
-                  Cabs
-                </Link>
-              </li>
-              <li>
-                <Link to="/hotels" className="footer-link">
-                  Hotels
-                </Link>
-              </li> */}
-              <li>
-                <Link to="/blogs" className="footer-link">
-                  Blog
-                </Link>
-              </li>
-            </ul>
+          <div className="col-6 col-lg-3 d-flex justify-content-between mb-3 mb-lg-0">
+            <div>
+              <h5 className="fw-bold">Explore</h5>
+              <ul className="list-unstyled">
+                <li>
+                  <Link to="/" className="footer-link">
+                    Tour Packages
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/destinations" className="footer-link">
+                    Destinations
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/getaways" className="footer-link">
+                    Getaways
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/blogs" className="footer-link">
+                    Blog
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Themes Section */}
-          <div className="col-md-3">
-            <h5 className="fw-bold">Themes</h5>
-            <ul className="list-unstyled">
-              {themes?.map((theme, index) => (
-                <li key={index}>
-                  <Link
-                    to={`/themes/${theme.toLowerCase()}`}
-                    className="footer-link"
-                  >
-                    {theme}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="col-6 col-lg-3 d-flex justify-content-between mb-3 mb-lg-0">
+            <div>
+              <h5 className="fw-bold">Themes</h5>
+              <ul className="list-unstyled">
+                {themes?.map((theme, index) => (
+                  <li key={index}>
+                    <Link
+                      to={`/themes/${theme.toLowerCase()}`}
+                      className="footer-link"
+                    >
+                      {theme}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Top Packages Section */}
-          <div className="col-md-3">
-            <h5 className="fw-bold">Top Packages</h5>
-            <ul className="list-unstyled">
-              {topPackages?.slice(0, 10).map((pkg, index) => (
-                <li key={index}>
-                  <span
-                    onClick={() => handleNavigation(pkg.cityName)}
-                    className="footer-link"
-                  >
-                    {pkg.cityName}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* International Section */}
-          <div className="col-md-3">
-            <h5 className="fw-bold">International</h5>
-            <ul className="list-unstyled">
-              {internationalDestinations
-                ?.slice(0, 10)
-                .map((destination, index) => (
+          <div className="col-6 col-lg-3 d-flex justify-content-between mb-3 mb-lg-0">
+            <div>
+              <h5 className="fw-bold">Top Packages</h5>
+              <ul className="list-unstyled">
+                {topPackages?.slice(0, 10).map((pkg, index) => (
                   <li key={index}>
                     <span
-                      onClick={() => handleNavigation(destination.cityName)}
+                      onClick={() => handleNavigation(pkg.cityName)}
                       className="footer-link"
                     >
-                      {destination.cityName}
+                      {pkg.cityName}
                     </span>
                   </li>
                 ))}
-            </ul>
+              </ul>
+            </div>
+          </div>
+
+          {/* International Section */}
+          <div className="col-6 col-lg-3 d-flex justify-content-between">
+            <div>
+              <h5 className="fw-bold">International</h5>
+              <ul className="list-unstyled">
+                {internationalDestinations
+                  ?.slice(0, 10)
+                  .map((destination, index) => (
+                    <li key={index}>
+                      <span
+                        onClick={() => handleNavigation(destination.cityName)}
+                        className="footer-link"
+                      >
+                        {destination.cityName}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -139,15 +137,7 @@ const Footer = ({ themes, topPackages, internationalDestinations, pages }) => {
         <div className="text-center">
           {pages.map((page, index) => (
             <React.Fragment key={index}>
-              <Link
-                to={page.link}
-                className="footer-link"
-                // style={{
-                //   textDecoration: "none",
-                //   color: "blue",
-                //   margin: "0 8px", // Add spacing around links
-                // }}
-              >
+              <Link to={page.link} className="footer-link">
                 {page.title}
               </Link>
               {/* Add vertical line except after the last title */}
@@ -202,28 +192,6 @@ const Footer = ({ themes, topPackages, internationalDestinations, pages }) => {
           </div>
         </div>
       </div>
-
-      {/* Right Side Corner Floating Icons */}
-      {/* <div className="floating-icons">
-        <div className="icon" onClick={handleCall} title="Call">
-          <FontAwesomeIcon icon={faPhone} size="lg" />
-        </div>
-        <div className="icon" onClick={handleWhatsApp} title="WhatsApp">
-          <FontAwesomeIcon
-            icon={faWhatsapp}
-            size="lg"
-            style={{ color: "#25D366" }}
-          />
-        </div>
-        <div>
-          <div className="icon" onClick={handleChatBot} title="Chatbot">
-            <FontAwesomeIcon icon={faCommentDots} size="lg" />
-          </div>
-
-          {/* Conditionally render TravelChatbot *
-          {isChatOpen && <TravelChatbot onClose={handleCloseChatBot} />
-        </div>
-      </div> */}
 
       <div className="floating-icons">
         {/* Right Side Corner Floating Icons */}

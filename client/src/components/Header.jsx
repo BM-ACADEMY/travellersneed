@@ -13,7 +13,7 @@ import { useUser } from "../hooks/UserContext";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import Sign_in from "../pages/Sign_in";
 import Sign_up from "../pages/Sign_up";
-import axios from "axios";
+import './Header.css';
 import { fetchAllAddressesTourType } from "../modules/admin/services/ApiService";
 const Navbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -73,7 +73,7 @@ const Navbar = () => {
   }
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light border-bottom"
+      className="navbar navbar-expand-lg navbar-light border-bottom sticky-header"
       style={{
         backgroundColor: "white",
         boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
