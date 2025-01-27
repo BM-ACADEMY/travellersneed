@@ -301,11 +301,12 @@ const Dashboard = () => {
         </div>
       </div>
       <hr />
-      <div className="d-flex gap-3 mt-4 mb-4 ">
+      <div className="d-flex gap-3 flex-column flex-md-row mt-4 mb-4 ">
        <div>
           <UpcomingTrips />
         </div>
-        <div style={{ width: "2px solid", backgroundColor: "#ef156c" }}></div>
+        {/* <div style={{ width: "2px solid", backgroundColor: "#ef156c" }}></div> */}
+        
         <div className="shadow-lg p-2 rounded-4">
           <div className="mt-3 mb-3">
             <h4 style={{ color: "#ef156c" }}>Booking Details</h4>

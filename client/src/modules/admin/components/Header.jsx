@@ -37,14 +37,16 @@ const Header = ({ toggleSidebar }) => {
     >
       <div className="container-fluid d-flex justify-content-around align-items-center p-3">
         {/* Left side: Sidebar Toggle and Active Title */}
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-center">
           <button
             className="btn btn-link p-0 d-lg-none d-sm-block"
             onClick={toggleSidebar}
           >
             <FontAwesomeIcon icon={faBars} className="fs-3 menu-icon" />
           </button>
-          <h4 style={{ color: "#ef156c" }}>{componentName ? `Welcome to ${componentName}` : "Welcome!"}</h4>
+          <div className="d-flex justify-content-center align-content-center">
+          <span style={{ color: "#ef156c" ,marginLeft:"5px" }}>{componentName ? `Welcome to ${componentName}` : "Welcome!"}</span>
+          </div>
         </div>
 
         {/* Right side: Search, Notifications, User Profile */}

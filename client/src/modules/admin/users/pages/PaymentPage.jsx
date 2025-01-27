@@ -166,7 +166,7 @@ const PaymentPage = () => {
         <h4 style={{ color: "#ef156c" }}>Payment Details</h4>
       </div>
       {/* Filter and Table */}
-      <div className="mb-4 d-flex justify-content-between align-items-center">
+      <div className="mb-4 d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <button
             className={`btn ${filter === "today" && "btn-primary"} me-2`}
@@ -196,7 +196,8 @@ const PaymentPage = () => {
       </div>
 
       {/* Payment Table */}
-      <table className="table table-striped table-responsive">
+    <div className="table table-responsive">
+    <table className="table table-striped">
         <thead>
           <tr>
             <th>#</th>
@@ -278,6 +279,7 @@ const PaymentPage = () => {
           ))}
         </tbody>
       </table>
+    </div>
 
       {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>

@@ -48,8 +48,8 @@ const Themes_category = ({ themesData }) => {
           return categoryData.themes.map((theme, themeIndex) => (
             <div
               key={`${index}-${themeIndex}`}
-              className="p-2"
-              style={{ width: "200px" }}
+              className="p-2 d-flex justify-content-start flex-wrap w-100 w-lg-auto"
+              style={{ maxWidth: "200px" }} // Ensures a fixed width on large screens
             >
               {/* Render ThemeCard with the correct data */}
               <ThemeCard

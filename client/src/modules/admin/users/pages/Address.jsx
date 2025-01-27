@@ -196,7 +196,7 @@ const Address = () => {
       <h2 className="text-center mb-4">
         {state.addressId ? "Edit Address" : "Create Address"}
       </h2>
-      <div className="d-flex gap-5">
+      <div className="d-flex flex-column flex-lg-row gap-5">
         <form
           onSubmit={state.addressId ? handleUpdate : handleSubmit}
           className="flex-grow-1"
@@ -320,7 +320,7 @@ const Address = () => {
         </div>
       </div>
 
-      <hr />
+      {/* <hr /> */}
       <div className="mt-3">
         <AddressTable onEdit={handleEdit} onDelete={handleDelete} />
       </div>

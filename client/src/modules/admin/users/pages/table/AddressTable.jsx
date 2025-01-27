@@ -134,7 +134,8 @@ const GET_IMAGE_FOR_ADDRESS_URL = import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS.sta
       </div>
 
       {/* Table */}
-      <table className="table table-bordered">
+     <div className="table table-responsive">
+     <table className="table table-bordered">
         <thead>
           <tr>
             <th>Country</th>
@@ -178,6 +179,7 @@ const GET_IMAGE_FOR_ADDRESS_URL = import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS.sta
           ))}
         </tbody>
       </table>
+     </div>
 
       {/* Pagination */}
       <nav>

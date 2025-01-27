@@ -731,62 +731,62 @@ const Places = () => {
           style={{ flexGrow: 1 }}
         />
       </div> */}
-      <div className="mt-3 d-flex gap-3">
-        {/* State Dropdown */}
-        <div style={{ width: "200px" }}>
-          <label htmlFor="state" className="form-label">
-            State
-          </label>
-          <select
-            id="state"
-            className="form-select"
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-          >
-            <option value="">-- Select a state --</option>
-            {stateOptions.map((state) => (
-              <option key={state._id} value={state.stateName}>
-                {state.stateName}
-              </option>
-            ))}
-          </select>
-        </div>
+   <div className="mt-3 d-flex gap-3 flex-wrap">
+  {/* State Dropdown */}
+  <div className="flex-grow-1 w-100 w-lg-30">
+    <label htmlFor="state" className="form-label">
+      State
+    </label>
+    <select
+      id="state"
+      className="form-select"
+      value={selectedState}
+      onChange={(e) => setSelectedState(e.target.value)}
+    >
+      <option value="">-- Select a state --</option>
+      {stateOptions.map((state) => (
+        <option key={state._id} value={state.stateName}>
+          {state.stateName}
+        </option>
+      ))}
+    </select>
+  </div>
 
-        {/* City Dropdown */}
-        <div style={{ width: "200px" }}>
-          <label htmlFor="city" className="form-label">
-            City
-          </label>
-          <select
-            id="city"
-            className="form-select"
-            value={selectedCity}
-            onChange={(e) => setSelectedCity(e.target.value)}
-          >
-            {" "}
-            <option value="">-- Select a City --</option>
-            {parentPlaceOptions.map((city) => (
-              <option key={city._id} value={city.cityName}>
-                {city.cityName}
-              </option>
-            ))}
-          </select>
-        </div>
+  {/* City Dropdown */}
+  <div className="flex-grow-1 w-100 w-lg-30">
+    <label htmlFor="city" className="form-label">
+      City
+    </label>
+    <select
+      id="city"
+      className="form-select"
+      value={selectedCity}
+      onChange={(e) => setSelectedCity(e.target.value)}
+    >
+      <option value="">-- Select a City --</option>
+      {parentPlaceOptions.map((city) => (
+        <option key={city._id} value={city.cityName}>
+          {city.cityName}
+        </option>
+      ))}
+    </select>
+  </div>
 
-        {/* Search Input */}
-        <div style={{ flexGrow: 1 }}>
-          <label htmlFor="search" className="form-label">
-            Search
-          </label>
-          <input
-            type="text"
-            id="search"
-            className="form-control"
-            value={search}
-            onChange={handleSearchChange}
-          />
-        </div>
-      </div>
+  {/* Search Input */}
+  <div className="flex-grow-1 w-100 w-lg-40">
+    <label htmlFor="search" className="form-label">
+      Search
+    </label>
+    <input
+      type="text"
+      id="search"
+      className="form-control"
+      value={search}
+      onChange={handleSearchChange}
+    />
+  </div>
+</div>
+
 
       {selectedState && selectedCity && (
         <>

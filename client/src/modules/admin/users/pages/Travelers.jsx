@@ -325,9 +325,9 @@ const Travelers = () => {
         <AlertMessage type={status} message={message} show={showAlert} />
       )}
       {/* Search and Add New User Button */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         {/* Search Bar */}
-        <div className="input-group" style={{ width: "60%" }}>
+        <div className="input-group w-100 w-lg-60 mb-2">
           <input
             type="text"
             className="form-control"
