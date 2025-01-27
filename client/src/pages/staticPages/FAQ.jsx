@@ -60,7 +60,7 @@ const FAQ = () => {
       </div>
       <hr />
       <div className="text-center mb-4">
-        <LazyLoadImage src={faq} alt="FAQ Logo" className="img-fluid" style={{ maxWidth: '500px' }} />
+        <LazyLoadImage src={faq} alt="FAQ Logo" className="img-fluid w-100" style={{ maxWidth: '500px' }} />
       </div>
 
       {/* FAQ Content */}

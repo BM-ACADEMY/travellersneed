@@ -14,7 +14,7 @@ import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import Sign_in from "../pages/Sign_in";
 import Sign_up from "../pages/Sign_up";
 import axios from "axios";
-import {fetchAllAddressesTourType} from "../modules/admin/services/ApiService";
+import { fetchAllAddressesTourType } from "../modules/admin/services/ApiService";
 const Navbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [profile, setProfile] = useState(false);
@@ -33,14 +33,11 @@ const Navbar = () => {
     setSignInOpen(true);
   };
   const handleAdminPanel = () => {
-   
-
     navigate("/admin-panel");
   };
-  const handleUserPanel=()=>{
-   
-    navigate("/user-panel")
-  }
+  const handleUserPanel = () => {
+    navigate("/user-panel");
+  };
   const handleSignInClose = () => setSignInOpen(false);
 
   const handleSignUpOpen = () => {
@@ -55,11 +52,10 @@ const Navbar = () => {
 
   const { user, logout } = useUser();
 
-  
   useEffect(() => {
     const fetchDestinations = async () => {
       try {
-        const response = await fetchAllAddressesTourType()
+        const response = await fetchAllAddressesTourType();
         const { domestic, international } = response.data.addresses;
 
         setDomesticDestinations(domestic);
@@ -155,61 +151,67 @@ const Navbar = () => {
                 aria-labelledby="toursDropdown"
                 style={{ minWidth: "250px" }}
               >
-                {/* Domestic Packages */}
+                <div className="d-flex gap-2">
+                  {/* Domestic Packages */}
+                <div className="d-flex flex-column">
                 <li>
-                  <h6
-                    className="dropdown-header"
-                    style={{ color: "rgba(40, 41, 65, 1)" }}
-                  >
-                    Domestic Packages
-                  </h6>
-                </li>
-                {domesticDestinations.length > 0 ? (
-                  domesticDestinations.map((dest, index) => (
-                    <li key={index}>
-                      <Link
-                        className="dropdown-item hover-underline"
-                        to={`/tour-packages/${dest.cityName}`}
-                      >
-                        {dest.cityName}
-                      </Link>
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-muted text-center">
-                    No domestic destinations available
+                    <h6
+                      className="dropdown-header"
+                      style={{ color: "#ef156c" }}
+                    >
+                      Domestic Packages
+                    </h6>
                   </li>
-                )}
+                  {domesticDestinations.length > 0 ? (
+                    domesticDestinations.map((dest, index) => (
+                      <li key={index}>
+                        <Link
+                          className="dropdown-item hover-underline"
+                          to={`/tour-packages/${dest.cityName}`}
+                        >
+                          {dest.cityName}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-muted text-center">
+                      No domestic destinations available
+                    </li>
+                  )}
+                </div>
 
-                <li>
+                  {/* <li>
                   <hr className="dropdown-divider" />
-                </li>
+                </li> */}
 
-                {/* International Packages */}
-                <li>
-                  <h6
-                    className="dropdown-header"
-                    style={{ color: "rgba(40, 41, 65, 1)" }}
-                  >
-                    International Packages
-                  </h6>
-                </li>
-                {internationalDestinations.length > 0 ? (
-                  internationalDestinations.map((dest, index) => (
-                    <li key={index}>
-                      <Link
-                        className="dropdown-item hover-underline"
-                        to={`/tour-packages/${dest.cityName}`}
+                  {/* International Packages */}
+                  <div className="d-flex flex-column">
+                    <li>
+                      <h6
+                        className="dropdown-header"
+                        style={{ color: "#ef156c" }}
                       >
-                        {dest.cityName}
-                      </Link>
+                        International Packages
+                      </h6>
                     </li>
-                  ))
-                ) : (
-                  <li className="text-muted text-center">
-                    No international destinations available
-                  </li>
-                )}
+                    {internationalDestinations.length > 0 ? (
+                      internationalDestinations.map((dest, index) => (
+                        <li key={index}>
+                          <Link
+                            className="dropdown-item hover-underline"
+                            to={`/tour-packages/${dest.cityName}`}
+                          >
+                            {dest.cityName}
+                          </Link>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="text-muted text-center">
+                        No international destinations available
+                      </li>
+                    )}
+                  </div>
+                </div>
               </ul>
             </li>
 
@@ -231,10 +233,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link
-                className="nav-link text-dark hover-underline"
-                to="/blogs"
-              >
+              <Link className="nav-link text-dark hover-underline" to="/blogs">
                 Blogs
               </Link>
             </li>

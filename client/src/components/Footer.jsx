@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link,useNavigate  } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faCommentDots } from "@fortawesome/free-solid-svg-icons"; // Solid icons
 import {
@@ -20,9 +20,9 @@ const Footer = ({ themes, topPackages, internationalDestinations, pages }) => {
   };
   const navigate = useNavigate();
 
-const handleNavigation = (cityName) => {
-  navigate(`/tour-packages/${encodeURIComponent(cityName)}`);
-};
+  const handleNavigation = (cityName) => {
+    navigate(`/tour-packages/${encodeURIComponent(cityName)}`);
+  };
 
   const handleWhatsApp = () => {
     const phoneNumber = "+919944940051";
@@ -101,13 +101,13 @@ const handleNavigation = (cityName) => {
           <div className="col-md-3">
             <h5 className="fw-bold">Top Packages</h5>
             <ul className="list-unstyled">
-              {topPackages?.map((pkg, index) => (
+              {topPackages?.slice(0, 10).map((pkg, index) => (
                 <li key={index}>
                   <span
-                   onClick={() => handleNavigation(pkg.cityName)}
+                    onClick={() => handleNavigation(pkg.cityName)}
                     className="footer-link"
                   >
-                    {pkg.cityName} 
+                    {pkg.cityName}
                   </span>
                 </li>
               ))}
@@ -118,17 +118,18 @@ const handleNavigation = (cityName) => {
           <div className="col-md-3">
             <h5 className="fw-bold">International</h5>
             <ul className="list-unstyled">
-              {internationalDestinations?.map((destination, index) => (
-                <li key={index}>
-                  <span
-                 
-                    onClick={() => handleNavigation(destination.cityName)}
-                    className="footer-link"
-                  >
-                    {destination.cityName}
-                  </span>
-                </li>
-              ))}
+              {internationalDestinations
+                ?.slice(0, 10)
+                .map((destination, index) => (
+                  <li key={index}>
+                    <span
+                      onClick={() => handleNavigation(destination.cityName)}
+                      className="footer-link"
+                    >
+                      {destination.cityName}
+                    </span>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
