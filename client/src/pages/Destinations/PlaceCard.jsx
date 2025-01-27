@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./PlaceCard.css";
 import { useNavigate } from "react-router-dom";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const PlaceCard = ({ place, index, totalCount, onViewDetails }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -49,7 +50,7 @@ const PlaceCard = ({ place, index, totalCount, onViewDetails }) => {
       if (descriptionRef.current.scrollHeight > maxHeight) {
         setShowFullDescription((prev) => !prev);
       } else {
-        console.log("Content does not exceed 5 lines.");
+       
       }
     }
   };
@@ -61,7 +62,7 @@ const PlaceCard = ({ place, index, totalCount, onViewDetails }) => {
     <div className="card place-card shadow-sm mb-4" onClick={handleClick}>
       {/* Place Image */}
       {place.images && place.images.length > 0 && (
-        <img
+        <LazyLoadImage
           src={constructImageURL(place.images[0])} // Use the first image and construct its URL
           alt={place.name}
           className="card-img-top"

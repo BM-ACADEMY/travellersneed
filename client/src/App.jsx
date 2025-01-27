@@ -33,6 +33,7 @@ import UserModule from "./modules/user/UserModule";
 import UserRoute from "./guard/UserRoute";
 import NotFound from "./pages/NotFound";
 import Not_Found from "./pages/Not_Found";
+import {AddressProvider} from "./hooks/AddressContext";
 
 
 export default function App() {
@@ -80,9 +81,11 @@ export default function App() {
           <Route
             path="/admin-panel/*"
             element={
+              <AddressProvider>
               <ComponentNameProvider>
                 <AdminRoute element={<AdminModule />} />
               </ComponentNameProvider>
+              </AddressProvider>
             }
           />
           

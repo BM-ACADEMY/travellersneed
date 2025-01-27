@@ -19,7 +19,6 @@ const Themes_category = ({ themesData }) => {
   }
   var BASE_URL = import.meta.env.VITE_BASE_URL;
   useEffect(() => {
-    console.log(themesData);
   }, [themesData]);
 
   // Define icons for each category using FontAwesome

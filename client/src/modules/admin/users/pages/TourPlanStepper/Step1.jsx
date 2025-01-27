@@ -9,8 +9,6 @@ const Step1 = ({
 }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(value);
-    
     onFormDataChange({ [name]: value });
   };
 

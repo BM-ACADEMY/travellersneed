@@ -1,5 +1,7 @@
 import React from 'react';
 import cont from '../../images/contact1.png'; 
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const ContactUs = () => {
   return (
@@ -10,7 +12,7 @@ const ContactUs = () => {
       </div>
       <hr />
       <section className="hero">
-        <img
+        <LazyLoadImage
           src={cont} // Replace this with your scenic image URL
         //   className="img-fluid hero-image1"
           alt="Hero Image"

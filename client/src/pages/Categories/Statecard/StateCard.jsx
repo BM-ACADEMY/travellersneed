@@ -2,14 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import "../Statecard/StateCard.css"; // Import custom CSS for animations
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const StateCard = ({ stateName, stateImage, startingPrice, cityCount }) => {
   return (
    <Link   to={`/tour-packages/${encodeURIComponent(stateName)}`}
    className="text-decoration-none">
     <div className="shadow-sm border-0  card state-card ">
       {/* Image */}
-      <img
+      <LazyLoadImage
         src={stateImage}
         alt={stateName}
         className="card-img-top"

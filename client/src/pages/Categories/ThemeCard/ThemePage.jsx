@@ -8,6 +8,8 @@ import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import ReusableModal from "../../model/ReusableModel";
 import QuoteForm from "../../model/QuoteForm";
+
+
 const ThemePage = () => {
   const { themename } = useParams();
   const [themeDetails, setThemeDetails] = useState(null);
@@ -38,7 +40,7 @@ const ThemePage = () => {
           )}`
         );
         const { theme, tourPlans } = response.data;
-        console.log("API Response: ", response.data); // Log the full response
+     
         setThemeDetails(theme);
         setTourPlans(tourPlans || []); // Ensure tourPlans is an array
       } catch (err) {

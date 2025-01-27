@@ -33,12 +33,12 @@ const Navbar = () => {
     setSignInOpen(true);
   };
   const handleAdminPanel = () => {
-    console.log(profile);
+   
 
     navigate("/admin-panel");
   };
   const handleUserPanel=()=>{
-    console.log(profile);
+   
     navigate("/user-panel")
   }
   const handleSignInClose = () => setSignInOpen(false);
@@ -54,7 +54,7 @@ const Navbar = () => {
   const toggleProfile = () => setProfile((prevState) => !prevState);
 
   const { user, logout } = useUser();
-  console.log(user,"user");
+
   
   useEffect(() => {
     const fetchDestinations = async () => {

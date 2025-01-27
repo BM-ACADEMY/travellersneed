@@ -134,7 +134,6 @@ const TravelChatbot = ({ onClose }) => {
 
       try {
         const response = await createQuote(requestData);
-        console.log("Response Data:", response.data);
         setStepTriggered(true); // Prevent re-triggering of the step
       } catch (error) {
         console.error("Error posting data:", error);

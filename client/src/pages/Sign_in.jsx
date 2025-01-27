@@ -19,7 +19,8 @@ import axios from "axios";
 import { useUser } from "../hooks/UserContext";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase"; // Import auth from the firebase.js file
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const Sign_in = ({ open, onClose, onSignUpClick }) => {
   const [formData, setFormData] = useState({
@@ -105,9 +106,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
     provider.getCustomParameters({ prompt: "select_account" });
     try {
       const resource = await signInWithPopup(auth, provider);
-      console.log(resource, "auth");
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -221,7 +220,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
             }}
           >
             {/* Image */}
-            <img
+            <LazyLoadImage
               src={sign_in}
               alt="Sign-In Visual"
               className="img-fluid rounded"

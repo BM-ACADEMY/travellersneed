@@ -5,63 +5,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-// **POST**: Create a new package
-// const createPackage = async (req, res) => {
-//   try {
-//     const {
-//       name,
-//       themeId,
-//       userId,
-//       price,
-//       duration,
-//       inclusions,
-//       packageDescription,
-//       categories,
-//       addressId, // Reference Address model
-//       bestMonth,
-//     } = req.body;
-
-//     // Parse categories and inclusions (if sent as JSON strings)
-//     const parsedCategories = categories ? JSON.parse(categories) : ['normal'];
-//     const parsedInclusions = inclusions ? JSON.parse(inclusions) : [];
-
-//     // Handle uploaded images
-//     let imagePaths = [];
-//     if (req.files) {
-//       imagePaths = req.files.map((file) => file.path); // Store file paths
-//     }
-
-//     // Create a new package
-//     const newPackage = new Package({
-//       name,
-//       themeId,
-//       userId,
-//       price,
-//       duration,
-//       inclusions: parsedInclusions,
-//       images: imagePaths,
-//       packageDescription,
-//       categories: parsedCategories,
-//       addressId, // Use the addressId reference
-//       bestMonth,
-//     });
-
-//     // Save to the database
-//     await newPackage.save();
-
-//     res.status(201).json({
-//       message: 'Package created successfully',
-//       package: newPackage,
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       error: 'Error creating package',
-//       details: error.message,
-//     });
-//   }
-// };
 const createPackage = async (req, res) => {
-  console.log(req.body);
+ 
   
   try {
     const {
@@ -165,47 +110,7 @@ const getAllPackages = async (req, res) => {
   }
 };
 
-// **GET**: Get filtered packages
-// const getFilteredPackages = async (req, res) => {
-//   try {
-//     const packages = await Package.find()
-//       .populate('themeId', 'name') // Populate theme details
-//       .populate('addressId', 'country state city'); // Populate address details
 
-//     if (!packages || packages.length === 0) {
-//       return res.status(404).json({ error: 'No packages found' });
-//     }
-
-//     // Group packages by address (state and city)
-//     const groupedPackages = {};
-//     packages.forEach((pkg) => {
-//       const address = pkg.addressId;
-//       if (!address) return;
-
-//       const stateKey = address.state;
-//       if (!groupedPackages[stateKey]) {
-//         groupedPackages[stateKey] = {};
-//       }
-
-//       const cityKey = address.city;
-//       if (!groupedPackages[stateKey][cityKey]) {
-//         groupedPackages[stateKey][cityKey] = [];
-//       }
-
-//       groupedPackages[stateKey][cityKey].push(pkg);
-//     });
-
-//     res.status(200).json({
-//       message: 'Filtered packages fetched successfully',
-//       data: groupedPackages,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       error: 'Error filtering packages',
-//       details: error.message,
-//     });
-//   }
-// };
 const getFilteredPackages = async (req, res) => {
   try {
     const categories = {
@@ -475,7 +380,6 @@ const getTopDestinationPackagesGroupedByState = async (req, res) => {
 const getPackageById = async (req, res) => {
   try {
     const { packageId } = req.params;
-    console.log(packageId);
     
     const package = await Package.findById(packageId)
       .populate("addressId", "state city country description")

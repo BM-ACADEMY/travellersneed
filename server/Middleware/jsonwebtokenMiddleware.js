@@ -8,8 +8,6 @@ const authMiddleware = (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'Token Missing' });
 
   try {
-    console.log(token, 'token');
-    console.log(process.env.JWT_SECRET, 'secret');
 
     const verified = jwt.verify(token, process.env.JWT_SECRET); // Ensure JWT_SECRET is loaded
     req.user = verified;

@@ -25,6 +25,8 @@ import Wildlife_category from "../Categories/Wildlife_category";
 import MapComponent from "../../components/MapComponent";
 import ReusableModal from "../model/ReusableModel";
 import QuoteForm from "../model/QuoteForm";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -92,12 +94,7 @@ const Home = () => {
   }, []);
   const handleSearch = () => {
     const days = parseInt(duration.split(" ")[0], 10);
-
-    console.log("Search triggered with:", {
-      startPlace,
-      destination,
-      duration: days,
-    });
+  
     navigate(
       `tour-packages/${encodeURIComponent(
         destination
@@ -152,7 +149,7 @@ const Home = () => {
         `${BASE_URL}/themes/get-all-themes-by-tour-plan`
       );
       const { data } = response.data;
-      console.log(data);
+ 
 
       if (data) {
         setThemesData(data);
@@ -198,7 +195,7 @@ const Home = () => {
               className="d-none d-lg-block"
               style={{ flex: "1", textAlign: "left" }}
             >
-              <img
+              <LazyLoadImage
                 src={leftImage}
                 alt="Left Illustration"
                 className="img-fluid"
@@ -315,7 +312,7 @@ const Home = () => {
               className="d-none d-lg-block"
               style={{ flex: "1", textAlign: "right" }}
             >
-              <img
+              <LazyLoadImage
                 src={rightImage}
                 alt="Right Illustration"
                 className="img-fluid"

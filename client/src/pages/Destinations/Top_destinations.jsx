@@ -4,6 +4,8 @@ import "../Destinations/Top_destinations.css";
 import { useNavigate } from "react-router-dom";
 import ReusableModal from "../model/ReusableModel";
 import QuoteForm from "../model/QuoteForm";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 // Helper function to construct image URL
 
@@ -105,7 +107,7 @@ const Top_destinations = () => {
             onClick={() => navigate(`/details/${place?.state?.state}/${place.state.city}`)}
           >
             <div className="destination-card">
-              <img
+              <LazyLoadImage
                 src={place.imageURL}
                 alt={place.name}
                 className="img-fluid rounded"
@@ -136,7 +138,7 @@ const Top_destinations = () => {
               onClick={() => navigate(`/details/${state?.state?.state}/${state?.state?.city}`)}
             >
               <div className="destination-card">
-                <img
+                <LazyLoadImage
                   src={state.imageURL}
                   alt={state.name}
                   className="img-fluid rounded"

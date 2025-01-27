@@ -38,7 +38,7 @@ exports.createTourPlan = async (req, res) => {
       themeId,
       // operator,
     } = req.body;
-    console.log(req.body);
+
 
     // Create folder dynamically for the tour plan
     const tourPlanFolder = await createTourPlanFolder(tourCode);
@@ -296,8 +296,6 @@ exports.getTourPlanByStateSearch = async (req, res) => {
   try {
     const { stateName } = req.params;
 
-    console.log("Fetching tour plans for state:", stateName);
-
     // Step 1: Fetch all tour plans filtered by the given stateName
     const tourPlans = await TourPlan.find()
       .populate({
@@ -378,151 +376,13 @@ exports.getTourPlanByStateSearch = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-// exports.getTourPlansByState = async (req, res) => {
-//   try {
-//     const { stateName } = req.params;
 
-//     console.log("Fetching tour plans for state:", stateName);
-
-//     // Find the address with the matching stateName
-//     const address = await Address.findOne({
-//       state: new RegExp(`^${stateName}$`, "i"),
-//     }).select("country state city description images startingPrice");
-
-//     if (!address) {
-//       return res
-//         .status(404)
-//         .json({ message: "No address found for the given state" });
-//     }
-
-//     // Fetch tour plans associated with the state
-//     const tourPlans = await TourPlan.find({ addressId: address._id })
-//       .populate(
-//         "addressId",
-//         "country state city description images startingPrice"
-//       )
-//       .populate("startPlace", "name description")
-//       .lean(); // Fetch plain objects for easier manipulation
-
-//     if (tourPlans.length === 0) {
-//       return res.json({
-//         message: "No tour plans found for the given state",
-//         address,
-//       });
-//     }
-
-//     // Return data without reviews
-//     res.json({
-//       message: "Tour plans retrieved successfully",
-//       address,
-//       tourPlans,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching tour plans by state:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-
-// exports.getTourPlansByState = async (req, res) => {
-//   try {
-//     const { stateName } = req.params;
-
-//     console.log("Fetching tour plans for city or state:", stateName);
-
-//     // Find the address first by city, then by state
-//     const address = await Address.findOne({
-//       $or: [
-//         { city: new RegExp(`^${stateName}$`, "i") }, // Match by city
-//         { state: new RegExp(`^${stateName}$`, "i") }, // Match by state if city doesn't match
-//       ],
-//     }).select("country state city description images startingPrice");
-
-//     if (!address) {
-//       return res
-//         .send()
-//         .json({ message: "No address found for the given city or state" });
-//     }
-
-//     // Initialize the base query
-//     const baseQuery = { addressId: address._id };
-
-//     // Only add conditions for `from` and `duration` if they exist in req.query
-//     if (req.query.from && mongoose.Types.ObjectId.isValid(req.query.from)) {
-//       baseQuery.startPlace = req.query.from; // Add startPlace condition
-//     }
-
-//     if (req.query.duration) {
-//       const durationValue = parseInt(req.query.duration, 10);
-//       if (!isNaN(durationValue)) {
-//         baseQuery.duration = durationValue; // Add duration condition
-//       }
-//     }
-
-//     let tourPlans;
-
-//     // If the stateName matches the city, fetch all tour plans
-//     if (address.city.toLowerCase() === stateName.toLowerCase()) {
-//       console.log("Fetching tour plans for city:", address.city);
-
-//       tourPlans = await TourPlan.find(baseQuery)
-//         .populate(
-//           "addressId",
-//           "country state city description images startingPrice"
-//         )
-//         .populate("startPlace", "name description")
-//         .lean();
-
-//       if (tourPlans.length === 0) {
-//         return res.json({
-//           message: "No tour plans found for the given city",
-//           address,
-//         });
-//       }
-//     }
-//     // If the stateName matches the state, check themeId and fetch accordingly
-//     else if (address.state.toLowerCase() === stateName.toLowerCase()) {
-//       console.log("Fetching tour plans for state:", address.state);
-
-//       tourPlans = await TourPlan.find({
-//         ...baseQuery,
-//         $or: [
-//           { themeId: { $type: "string", $eq: "" } }, // Check if themeId is an empty string
-//           { themeId: { $type: "array", $size: 0 } }, // Check if themeId is an empty array
-//         ],
-//       })
-//         .populate(
-//           "addressId",
-//           "country state city description images startingPrice"
-//         )
-//         .populate("startPlace", "name description")
-//         .lean();
-
-//       if (tourPlans.length === 0) {
-//         return res.json({
-//           message: "No tour plans found for the given state with empty themeId",
-//           address,
-//         });
-//       }
-//     }
-
-//     // Return data with the matching address and tour plans
-//     res.json({
-//       message: "Tour plans retrieved successfully",
-//       address,
-//       tourPlans,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching tour plans by city or state:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 
 exports.getTourPlansByState = async (req, res) => {
   try {
     const { stateName } = req.params;
 
-    console.log("Fetching tour plans for city or state:", stateName);
+
 
     const address = await Address.findOne({
       $or: [
@@ -553,7 +413,7 @@ exports.getTourPlansByState = async (req, res) => {
     let tourPlans;
 
     if (address.city.toLowerCase() === stateName.toLowerCase()) {
-      console.log("Fetching tour plans for city:", address.city);
+ 
 
       tourPlans = await TourPlan.find(baseQuery)
         .populate("addressId", "country state city description images startingPrice")
@@ -567,7 +427,7 @@ exports.getTourPlansByState = async (req, res) => {
         });
       }
     } else if (address.state.toLowerCase() === stateName.toLowerCase()) {
-      console.log("Fetching tour plans for state:", address.state);
+
 
       tourPlans = await TourPlan.find({
         ...baseQuery,
@@ -604,7 +464,6 @@ exports.getReviewsByState = async (req, res) => {
     const { stateName } = req.params;
     const { page = 1, limit = 5 } = req.query;
 
-    console.log("Fetching reviews for state:", stateName);
 
     // Find the address with the matching stateName
     const address = await Address.findOne({
@@ -837,9 +696,6 @@ exports.updateTourPlan = async (req, res) => {
   try {
     const { tourPlanId } = req.params;
     const updatedData = req.body;
-
-    console.log(req.body, "update");
-    console.log(req.files, "file");
     // Parse and validate array fields, including `images`
     const arrayFields = [
       "itinerary",
@@ -941,7 +797,7 @@ exports.getTourPlansByCity = async (req, res) => {
     const { cityName, title = "" } = req.query;
     const { page = 1, limit = 10 } = req.query; // Pagination parameters with default values
 
-    console.log("Fetching tour plans for city:", cityName, "and title:", title);
+
 
     // Find the address with the matching cityName
     const address = await Address.findOne({

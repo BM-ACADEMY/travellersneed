@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component'; // Lazy Load library
 import '../PackageCard/PackageCard.css';
 
 const PackageCard = ({ tourPlan }) => {
@@ -14,9 +15,7 @@ const PackageCard = ({ tourPlan }) => {
 
   // Extract tourCode and fileName from the first image path
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const VITE_GET_IMAGE_FOR_TOUR_PLAN = import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN.startsWith(
-    "http"
-  )
+  const VITE_GET_IMAGE_FOR_TOUR_PLAN = import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN.startsWith("http")
     ? import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN
     : `${BASE_URL}${import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN}`;
   let tourCode = '';
@@ -28,23 +27,34 @@ const PackageCard = ({ tourPlan }) => {
   }
   const lowerCaseTourCode = tourCode.toLowerCase();
   // Construct the image URL dynamically
-  const imageUrl =`${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(
+  const imageUrl = `${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(
     tourCode?.toUpperCase() || ""
   )}&fileName=${encodeURIComponent(fileName || "")}`;
 
   return (
-    <Link className="" to={`/tour-plan/${lowerCaseTourCode}`} style={{ textDecoration: 'none' }}>
-      
+    <Link className="" to={`/tour-plan/${lowerCaseTourCode}`} style={{ textDecoration: "none" }}>
       <div className="package-card">
-        <div
-          className="package-card-image"
-          style={{ backgroundImage: `url(${imageUrl})` }}
-        >
+        <div className="package-card-image">
+          <LazyLoadImage
+            src={imageUrl}
+            alt={`Image for ${title}`}
+            effect="blur"
+            height="100%"
+            width="100%"
+            style={{
+              objectFit: "cover", // Ensure the image covers the area without distortion
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+          />
+          
           <div className="badge-container">
-            {itTourPlan === 'Y' && <span className="advanced-badge">Advanced</span>}
-            {itPopular === 'Y' && <span className="popular-badge">Popular</span>}
+            {itTourPlan === "Y" && <span className="advanced-badge">Advanced</span>}
+            {itPopular === "Y" && <span className="popular-badge">Popular</span>}
           </div>
         </div>
+
         <div className="package-card-details">
           <h3 className="package-title">{title}</h3>
           <p className="package-summary">{itSummaryTitle}</p>

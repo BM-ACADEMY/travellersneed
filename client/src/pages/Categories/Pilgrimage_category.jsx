@@ -8,7 +8,7 @@ const Pilgrimage_category = ({ pilgrimageData }) => {
     }
     var BASE_URL = import.meta.env.VITE_BASE_URL;
     useEffect(() => {
-        console.log('Pilgrimage Data:', pilgrimageData);
+      
     }, [pilgrimageData]);
 
     return (

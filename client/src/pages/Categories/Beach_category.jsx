@@ -10,7 +10,6 @@ const Beach_category = ({ beachData }) => {
     var BASE_URL = import.meta.env.VITE_BASE_URL;
    
     useEffect(() => {
-        console.log(beachData);
     }, [beachData]);
 
     return (

@@ -21,7 +21,13 @@ import Sign_in from "../../Sign_in";
 import Sign_up from "../../Sign_up";
 import qrcode from "../../../assets/qrcode.png.png";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {fetchTourPlanByTourId,createBooking,createPayment} from "../../../modules/admin/services/ApiService";
+import {
+  fetchTourPlanByTourId,
+  createBooking,
+  createPayment,
+} from "../../../modules/admin/services/ApiService";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 // Import Swiper styles
 import "swiper/css";
@@ -34,7 +40,7 @@ import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import ReviewForState from "../../Reviews/ReviewForState";
 import ReusableModal from "../../model/ReusableModel";
 import QuoteForm from "../../model/QuoteForm";
-import BookingPolicy from  "../../staticPages/BookingPolicy"
+import BookingPolicy from "../../staticPages/BookingPolicy";
 const PackagePage = () => {
   const { tourCode } = useParams();
   const { user, login } = useUser();
@@ -106,7 +112,6 @@ const PackagePage = () => {
         const response = await fetchTourPlanByTourId(upperCaseTourCode);
         setPackageDetails(response.data.tourPlan); // Assuming the response contains `tourPlan` key
         setReviews(response.data.tourPlan.reviews || []); // Assuming reviews are part of the `tourPlan` object
-        console.log(response.data.tourPlan.reviews, "rev");
       } catch (err) {
         setError(err.response?.data?.error || "Error fetching data");
       } finally {
@@ -217,11 +222,10 @@ const PackagePage = () => {
       alternatePhoneNumber: formData.alternatePhone,
       address,
     };
-    console.log(bookingData, "booking");
+
 
     try {
       const response = await createBooking(bookingData);
-      console.log("Booking successful:", response.data.booking);
       setPackagePrice(response.data.booking.price);
       setOrderId(response.data.booking.orderId);
       setBookingId(response.data.booking.bookingId);
@@ -242,8 +246,6 @@ const PackagePage = () => {
         upiTransactionId: formData.transactionId,
         status: "Completed",
       };
-      console.log(paymentData);
-
       const response = await createPayment(paymentData);
       alert("Payment Successful! Payment ID: " + response.data.paymentId);
       setPaymentCompleted(true);
@@ -299,12 +301,6 @@ const PackagePage = () => {
     )}&fileName=${encodeURIComponent(fileName || "")}`;
   });
 
-  // Example usage: packageImageURLs now contains an array of image URLs
-  console.log(packageImageURLs);
-
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
-  };
 
   return (
     <div className="container mt-5">
@@ -323,7 +319,8 @@ const PackagePage = () => {
             <div className="swiper-container position-relative">
               {packageImageURLs.length === 1 ? (
                 // Show a single image if only one image is available
-                <img
+
+                <LazyLoadImage
                   src={packageImageURLs[0]}
                   alt="Tour Image"
                   style={{
@@ -349,7 +346,7 @@ const PackagePage = () => {
                   >
                     {packageImageURLs.map((url, index) => (
                       <SwiperSlide key={index}>
-                        <img
+                        <LazyLoadImage
                           src={url}
                           alt={`Slide ${index + 1}`}
                           style={{
@@ -388,7 +385,7 @@ const PackagePage = () => {
                   >
                     {packageImageURLs.map((url, index) => (
                       <SwiperSlide key={index}>
-                        <img
+                        <LazyLoadImage
                           src={url}
                           alt={`Thumbnail ${index + 1}`}
                           style={{
@@ -902,7 +899,7 @@ const PackagePage = () => {
             ) : (
               <div className="payment-success-card text-center">
                 <div className="success-animation">
-                  <img
+                  <LazyLoadImage
                     src="https://via.placeholder.com/150/00FF00?text=Success" // Example animated success GIF
                     alt="Payment Success"
                     style={{

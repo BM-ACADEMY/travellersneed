@@ -19,8 +19,6 @@ const UserModule = () => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded Token:", decodedToken);
-
         // Check if the decoded token contains the 'user' role
         if (decodedToken?.role && Array.isArray(decodedToken.role) && decodedToken.role.includes("user")) {
           setIsUser(true); // User role is present
@@ -48,7 +46,6 @@ const UserModule = () => {
   };
   // Redirect if not a user
   if (isUser === false) {
-    console.log('Navigating to home');
     return <Navigate to="/" />;
   }
 

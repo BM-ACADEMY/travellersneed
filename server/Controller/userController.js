@@ -64,27 +64,23 @@ const getUserById = async (req, res) => {
 // **POST**: Create a new user
 const createUser = async (req, res) => {
   try {
-    console.log("Request received:", req.body);
 
     const { username, email, phoneNumber, password, confirmPassword, role } =
       req.body;
 
     // Validate required fields
     if (!username || !email || !phoneNumber || !password || !confirmPassword) {
-      console.log("Validation failed: Missing fields");
       return res.status(400).json({ message: "All fields are required" });
     }
 
     // Check if passwords match
     if (password !== confirmPassword) {
-      console.log("Validation failed: Passwords do not match");
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      console.log("Validation failed: Email already exists");
       return res.status(400).json({ message: "Email already exists" });
     }
 
@@ -92,7 +88,7 @@ const createUser = async (req, res) => {
     const token = jwt.sign({ email, role }, process.env.JWT_SECRET, {
       expiresIn: "10000d",
     });
-    console.log("Generated token:", token);
+   
 
     // Create a new user
     const newUser = new User({
@@ -106,8 +102,6 @@ const createUser = async (req, res) => {
 
     // Save the user
     await newUser.save();
-    console.log("User saved:", newUser);
-
     // Respond with success
     res.status(201).json({
       message: "User registered successfully",
@@ -184,12 +178,8 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("User found:", user);
-    console.log(password, user.password);
-
     // Validate password
     const validPassword = await bcrypt.compare(password, user.password);
-    console.log("Password match:", validPassword);
 
     if (!validPassword) {
       return res.status(400).json({ message: "Invalid password" });
@@ -210,18 +200,12 @@ const loginUser = async (req, res) => {
       }
     );
 
-    console.log("Generated token:", token);
+
 
     // Respond with user data and token
     res.status(200).json({
       message: "Login successful",
       token,
-      // user: {
-      //   id: user._id,
-      //   username: user.username,
-      //   email: user.email,
-      //   role: user.role,
-      // },
     });
   } catch (err) {
     console.error("Login Error:", err.message);

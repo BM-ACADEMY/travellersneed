@@ -6,23 +6,9 @@ import ReviewForState from "../../Reviews/ReviewForState";
 import ReusableModal from "../../model/ReusableModel";
 import QuoteForm from "../../model/QuoteForm";
 import { fetchTourPlanByTourId } from "../../../modules/admin/services/ApiService";
-// const constructImageURL = (imagePath) => {
-//   if (!imagePath) {
-//     console.warn("Image path is not provided.");
-//     return "";
-//   }
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
-//   const normalizedPath = imagePath.replace(/\\/g, "/");
-//   const parts = normalizedPath.split("/");
-
-//   let placeName = parts[0] || ""; // Extract the folder name as placeName
-//   let fileName = parts[1] || ""; // Extract the file name
-
-//   // Construct the URL
-//   return `http://localhost:3000/api/places/get-image?placeName=${encodeURIComponent(
-//     placeName
-//   )}&fileName=${encodeURIComponent(fileName)}`;
-// };
 const TourPlanDetails = ({ tourPlan }) => {
   const [expandedStates, setExpandedStates] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -118,7 +104,7 @@ const TourPlanDetails = ({ tourPlan }) => {
     <div style={{ padding: "20px" }}>
       {/* Display the first image */}
       {images.length > 0 && (
-        <img
+        <LazyLoadImage
           src={packageImageURLs(images[0])}
           alt="Tour Package"
           style={{
@@ -201,7 +187,7 @@ const TourPlanDetails = ({ tourPlan }) => {
                 className="d-flex flex-column flex-md-row border rounded overflow-hidden mb-3"
               >
                 {/* Left Image */}
-                <img
+                <LazyLoadImage
                   src={constructImageURL(place.images[0])}
                   alt={place.name}
                   className="img-fluid d-block"

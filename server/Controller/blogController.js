@@ -15,8 +15,6 @@ const createDynamicFolder = async (category) => {
 exports.createBlog = async (req, res) => {
   try {
     const { title, author,date, description, cityDetails } = req.body;
-    console.log(req.body);
-    
     // Create category folder dynamically (can be blog category or something else)
     const categoryFolder = await createDynamicFolder(title);
 
@@ -112,9 +110,6 @@ exports.getBlogByTitle = async (req, res) => {
   try {
     const { title } = req.params;
     const formattedTitle = formatTitleBack(title);
-
-    // Log the formatted title for debugging
-    console.log(`Searching for blog with title: "${formattedTitle}"`);
 
     // Perform a case-insensitive search using a regular expression
     const blog = await Blog.findOne({ title: { $regex: new RegExp(`^${formattedTitle}$`, 'i') } });
@@ -214,8 +209,6 @@ exports.getImage = async (req, res) => {
       title.replace(/ /g, "_"),
       fileName
     );
-console.log(filePath,'blog');
-
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: "Image not found." });
     }

@@ -24,7 +24,6 @@ exports.getAllThemes = async (req, res) => {
 exports.createTheme = async (req, res) => {
   try {
     const { name, description } = req.body;
-    console.log(req.body);
 
     // Validate name
     if (!Theme.schema.path("name").enumValues.includes(name)) {

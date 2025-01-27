@@ -1,5 +1,7 @@
 import React from "react";
 import Travel from "../../images/Travel-Agents.png";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const TravelAgents = () => {
   return (
@@ -10,7 +12,7 @@ const TravelAgents = () => {
       </div>
       <hr />
       <div className="text-center my-4">
-        <img
+        <LazyLoadImage
           src={Travel}
           alt="Travel Agent"
           className="img-fluid hero-image mb-3 col-12"

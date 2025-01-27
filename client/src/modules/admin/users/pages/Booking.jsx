@@ -104,7 +104,7 @@ const Booking = () => {
       setSelectedCity(city);
       setLoading(true);
       const response = await fetchAllTourPlansForSearchByCity(city);
-      console.log(response);
+    
 
       if (response && response.status === 200) {
         setLoading(false);
@@ -123,7 +123,7 @@ const Booking = () => {
       setStatus("error", error);
       setMessage("Something went wrong!");
       setShowAlert(true); // Show error alert
-      console.log(error);
+     
     }
   };
 

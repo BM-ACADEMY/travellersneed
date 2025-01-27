@@ -1,27 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams,useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faUser } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { fetchBlogByTitle } from "../../modules/admin/services/ApiService";
 import "./BlogPage.css";
-import {fetchBlogByTitle} from "../../modules/admin/services/ApiService";
-
-// Helper function to generate image URL
-// const generateImageUrl = (imagePath) => {
-//   if (!imagePath) return "placeholder.jpg";
-//   const parts = imagePath.split("\\");
-//   const title = parts[0]?.toLowerCase() || "";
-//   const fileName = parts[1] || "";
-//   return `http://localhost:3000/api/blogs/get-image?title=${encodeURIComponent(
-//     title
-//   )}&fileName=${encodeURIComponent(fileName)}`;
-// };
 
 const BlogPage = () => {
-  const { title } = useParams(); // Get the blog title from the route
-  const navigate=useNavigate();
+  const { title } = useParams();
+  const navigate = useNavigate();
   const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(false); // Initialize loading state as false
+  const [loading, setLoading] = useState(false);
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const GET_IMAGE_FOR_BLOG_URL = import.meta.env.VITE_GET_IMAGE_FOR_BLOG.startsWith(
     "http"
@@ -38,110 +29,161 @@ const BlogPage = () => {
       title
     )}&fileName=${encodeURIComponent(fileName)}`;
   };
+
   useEffect(() => {
     const fetchBlog = async () => {
-      setLoading(true); // Set loading to true before making the API call
+      setLoading(true);
       try {
-        const response = await fetchBlogByTitle(title)
+        const response = await fetchBlogByTitle(title);
 
         if (response.data && response.data.blog) {
-          setBlog(response.data.blog); // Update state with the received blog
+          setBlog(response.data.blog);
         } else {
           console.error("Blog not found in response.");
-          setBlog(null); // Set blog to null if not found
+          setBlog(null);
         }
       } catch (error) {
         console.error("Error fetching blog:", error);
-        setBlog(null); // Set blog to null in case of error
+        setBlog(null);
       } finally {
-        setLoading(false); // Set loading to false after the API call ends
+        setLoading(false);
       }
     };
 
     if (title) {
       fetchBlog();
     }
-  }, [title]); // Depend on 'title' change
+  }, [title]);
 
-  const handleBook=(cityName)=>{
-    navigate(`/tour-packages/${encodeURIComponent(cityName)}`)
-  }
-
+  const handleBook = (cityName) => {
+    navigate(`/tour-packages/${encodeURIComponent(cityName)}`);
+  };
 
   if (loading) {
-    return <div className="text-center mt-5">Loading...</div>; 
+    return <div className="text-center mt-5">Loading...</div>;
   }
 
   if (!blog) {
-    return <div className="text-center mt-5">Blog not found.</div>; 
+    return <div className="text-center mt-5">Blog not found.</div>;
   }
 
   return (
-    <div className="container mt-4">
+    <motion.div
+      className="container mt-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="mt-3 mb-3 text-center">
-        <h4 style={{ color: "#ef156c" }}>Blogs </h4>
+        <motion.h4
+          style={{ color: "#ef156c" }}
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          Blogs
+        </motion.h4>
       </div>
       <hr />
-      <h1 className="">{blog.title}</h1>
-      <p className="text-muted ">
+      <motion.h1
+        className=""
+        initial={{ x: -50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        {blog.title}
+      </motion.h1>
+      <motion.p
+        className="text-muted"
+        initial={{ x: 50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
         <FontAwesomeIcon icon={faCalendarAlt} style={{ color: "#ef156c" }} />{" "}
         {new Date(blog.date).toLocaleDateString()}{" "}
         <span className="mx-2">|</span>
         <FontAwesomeIcon icon={faUser} style={{ color: "#ef156c" }} />{" "}
         {blog.author}
-      </p>
-      <div className="mb-3">
-        <img
+      </motion.p>
+      <motion.div
+        className="mb-3"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <LazyLoadImage
           src={generateImageUrl(blog.images[0])}
+          className="card-img-top"
           alt={blog.title}
-          className="img-fluid rounded img-responsive" // Ensures responsive resizing
+          effect="blur"
           style={{
             width: "60vw",
             height: "auto",
             border: "1px solid rgb(217, 215, 215)",
             padding: "5px",
-          }} // Makes the image scale responsively
+          }}
         />
-      </div>
-      <p>{blog.description}</p>
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+      >
+        {blog.description}
+      </motion.p>
 
       <div className="related-cities">
         {blog.cityDetails.map((city, index) => {
           const imageIndex = index + 1;
           return (
-            <div
+            <motion.div
               className="related-city"
               key={city._id}
               style={{ marginBottom: "30px" }}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.7 + index * 0.2 }}
             >
               <h4 style={{ color: "#ef156c" }}>{city.cityName}</h4>
-              <img
+              <motion.img
                 src={generateImageUrl(blog.images[imageIndex])}
                 alt={city.cityName}
-                className="img-fluid img-responsive" // Ensures responsive resizing
+                className="img-fluid img-responsive"
                 style={{
                   width: "60vw",
                   height: "auto",
                   border: "1px solid rgb(217, 215, 215)",
                   padding: "5px",
-                }} // Makes the image scale responsively
+                }}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.8 + index * 0.2 }}
               />
-              <p>{city.description}</p>
-              <a
-             
-                onClick={()=>handleBook(city.cityName)}
-                className="btn "
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 + index * 0.2 }}
+              >
+                {city.description}
+              </motion.p>
+              <motion.a
+                onClick={() => handleBook(city.cityName)}
+                className="btn"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ backgroundColor: "#ef156c", color: "white" }}
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1 + index * 0.2 }}
               >
                 Book Here
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -82,11 +82,8 @@ const CustomerSupport = () => {
     setShowAlert(false);
   
     if (isFormValid()) {
-      try {
-        console.log("Submitting:", newQuote);
-  
+      try {  
         const response = await createQuote(newQuote);
-  
         if (response && response.status === 201) {
           // Reset form after successful submission
           setNewQuote({

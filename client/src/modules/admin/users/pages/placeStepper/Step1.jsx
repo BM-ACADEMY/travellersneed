@@ -314,7 +314,6 @@ const Step1 = ({
     onFormDataChange({ [name]: checked ? "Y" : "N" });
   };
   const handleFileUpload = (e) => {
-    console.log("handle file changes");
     
     const files = Array.from(e.target.files);
     const fileUrls = files.map((file) => URL.createObjectURL(file));
@@ -403,6 +402,7 @@ const Step1 = ({
               className="form-control"
               id="bestTimetoVisit"
               name="bestTimetoVisit"
+              placeholder="October to November"
               value={formData.bestTimetoVisit}
               onChange={handleChange}
             />

@@ -102,7 +102,7 @@ const TourPlansTable = ({ onEditTourPlan, successMessage }) => {
   };
 
   const handleDelete = async (tourPlan) => {
-    console.log("Deleting place:", selectedPlace);
+
     // Perform delete action here
     handleCloseModal();
     try {
@@ -110,7 +110,6 @@ const TourPlansTable = ({ onEditTourPlan, successMessage }) => {
       setMessage("");
       setShowAlert(false);
       const response = await deleteTourPlan(tourPlanId);
-      console.log(response.data);
       fetchTourPlans();
       if (response && response.status === 201) {
         setStatus("success");
@@ -122,7 +121,7 @@ const TourPlansTable = ({ onEditTourPlan, successMessage }) => {
         setShowAlert(true); // Show error alert
       }
     } catch (error) {
-      console.log("console error", error);
+
       setStatus("error", error);
       setMessage("Something went wrong!");
       setShowAlert(true);

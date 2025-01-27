@@ -16,7 +16,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const Sign_up = ({ open, onClose, onSignInClick }) => {
   const [formData, setFormData] = useState({
     username: "",
@@ -260,7 +261,7 @@ const Sign_up = ({ open, onClose, onSignInClick }) => {
               overflow: "hidden",
             }}
           >
-            <Box
+            <LazyLoadImage
               component="img"
               src={sign_up_bg}
               alt="Signup Visual"

@@ -20,9 +20,7 @@ const Trending_category = ({ trendingData }) => {
           const stateName = parts[2]; // Extract "pondicherry"
           const fileName = parts.pop(); // Extract "1734516065233-765553093-ganesh-ratha-temple.jpg"
 
-          // Construct the stateImage URL dynamically
-          console.log(fileName,stateName);
-          
+
           const stateImageURL = `${BASE_URL}/address/image?stateName=${encodeURIComponent(
             stateName
           )}&fileName=${encodeURIComponent(fileName)}`;

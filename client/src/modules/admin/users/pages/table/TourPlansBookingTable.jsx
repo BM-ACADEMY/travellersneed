@@ -38,7 +38,6 @@ const TourPlansBookingTable = ({ packages }) => {
   };
   // Filter the data based on search term
   useEffect(() => {
-    console.log(packages);
 
     const filtered = packages.filter((pkg) =>
       pkg.title.toLowerCase().includes(searchTerm.toLowerCase())

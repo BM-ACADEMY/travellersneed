@@ -61,7 +61,6 @@ const GET_IMAGE_FOR_ADDRESS_URL = import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS.sta
     try {
       const response = await fetchAllAddressesForAdmin(country, state, city, currentPage, limit);
 
-      console.log(response.data);
       
       setAddresses(response.data.addresses);
       setPagination((prevState) => ({

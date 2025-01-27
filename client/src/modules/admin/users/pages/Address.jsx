@@ -1,22 +1,35 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import AddressTable from "./table/AddressTable";
 import AddressDemo from "./AddressDemo";
+import { useAddressContext } from "../../../../hooks/AddressContext";
 import axios from "axios";
-import {deleteAddress,updateAddress,createAddress} from "../../services/ApiService";
+
+
+import {
+  deleteAddress,
+  updateAddress,
+  createAddress,
+} from "../../services/ApiService";
 // Action types
 const SET_FIELD_VALUE = "SET_FIELD_VALUE";
+const SET_ADDRESS_FIELDS = "SET_ADDRESS_FIELDS";
 
 // Reducer function to handle state updates
 const addressReducer = (state, action) => {
   switch (action.type) {
     case SET_FIELD_VALUE:
       return { ...state, [action.field]: action.payload };
+    case SET_ADDRESS_FIELDS:
+      return { ...state, ...action.payload };
     default:
       return state;
   }
 };
 
 const Address = () => {
+  const { formData } = useAddressContext();
+ 
+
   const [state, dispatch] = useReducer(addressReducer, {
     country: "",
     state: "",
@@ -28,6 +41,20 @@ const Address = () => {
     images: [],
     addressId: null,
   });
+  useEffect(() => {
+    if (formData) {
+      dispatch({
+        type: SET_ADDRESS_FIELDS,
+        payload: {
+          country: formData.country?.name || "",
+          state: formData.state?.name || "",
+          city: formData.city?.name || "",
+          latitude: formData.coordinates?.latitude || "",
+          longitude: formData.coordinates?.longitude || "",
+        },
+      });
+    }
+  }, [formData]);
 
   // Handle form data change
   const handleFormDataChange = (e) => {
@@ -43,7 +70,6 @@ const Address = () => {
       payload: [...e.target.files],
     });
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,11 +104,11 @@ const Address = () => {
     try {
       let response;
       if (state.addressId) {
-        response = await updateAddress(state.addressId,finalFormData);
+        response = await updateAddress(state.addressId, finalFormData);
       } else {
         response = await createAddress(finalFormData);
       }
-      console.log("Form submitted successfully:", response.data);
+     
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -132,23 +158,14 @@ const Address = () => {
   // Handle delete
   const handleDelete = async (addressId) => {
     try {
-      console.log("Deleting address with ID:", addressId);
-  
-      // Call the delete API to remove the address
+     
       const response = await deleteAddress(addressId.id);
-      // Handle successful deletion
-      console.log("Address deleted successfully:", response.data);
-  
-      // You can also update the state or trigger a refresh to remove the deleted address from the UI
-      // For example, you can update the addresses list:
-      // setAddresses((prevAddresses) => prevAddresses.filter(address => address.id !== addressId));
-  
+   
     } catch (error) {
       console.error("Error deleting address:", error);
-      // Optionally, handle error (e.g., show error message to the user)
     }
   };
-  
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -185,7 +202,7 @@ const Address = () => {
         finalFormData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      console.log("Form updated successfully:", response.data);
+     
     } catch (error) {
       console.error("Error updating form:", error);
     }
@@ -193,9 +210,9 @@ const Address = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">
+      <h4 className="text-center mb-4" style={{ color: "#ef156c" }}>
         {state.addressId ? "Edit Address" : "Create Address"}
-      </h2>
+      </h4>
       <div className="d-flex flex-column flex-lg-row gap-5">
         <form
           onSubmit={state.addressId ? handleUpdate : handleSubmit}
@@ -315,7 +332,15 @@ const Address = () => {
           </button>
         </form>
 
-        <div className="d-flex flex-grow-1">
+        <div className="d-flex flex-grow-1 flex-column">
+          <div
+            className="mb-3  "
+            style={{ backgroundColor: "#ef156c", padding: "10px" }}
+          >
+            <span style={{ color: "white" }}>
+              Select the country,state,city from here
+            </span>
+          </div>
           <AddressDemo />
         </div>
       </div>

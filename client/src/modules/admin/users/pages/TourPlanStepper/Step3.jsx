@@ -16,7 +16,6 @@ const Step3 = ({ formData, onFormDataChange, themeOptions }) => {
   };
 
   const handleFileUpload = (e) => {
-    console.log("handle file changes");
     
     const files = Array.from(e.target.files);
     const fileUrls = files.map((file) => URL.createObjectURL(file));

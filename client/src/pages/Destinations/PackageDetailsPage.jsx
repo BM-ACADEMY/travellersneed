@@ -128,7 +128,6 @@ const PackageDetailsPage = () => {
         )}`
       );
 
-      console.log(response.data);
 
       const { address, tourPlans } = response.data;
       setStateData(address || {}); // Set address details
@@ -167,8 +166,7 @@ const PackageDetailsPage = () => {
     }
   };
   const handleViewDetails = (place) => {
-    // Logic to handle viewing details (e.g., navigate to a detailed page)
-    console.log("Viewing details for:", place.name);
+ 
   };
 
   const handleNavigateToTourPlan = () => {

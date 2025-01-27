@@ -129,7 +129,6 @@ const Places = () => {
         );
         const data = await response.json();
         const cityData = await cityResponse.json();
-        console.log(data);
         setStateOptions(data.states || []);
         setParentPlaceOptions(cityData.data || []);
         setSubPlaceOptions(cityData.data || []);
@@ -163,51 +162,7 @@ const Places = () => {
     return new File([blob], filename, { type: blob.type });
   }
 
-  // const handleSubmit = () => {
-  //   const formattedData = {
-  //     name: formData.name || "",
-  //     description: formData.description || "",
-  //     type: placeType,
-  //     state: formData.state || "",
-  //     parentPlace:
-  //       placeType === "sub_place" ? formData.parentPlace || null : null,
-  //     subPlaces: formData.subPlaces || [],
-  //     images: formData.images || [],
-  //     bestTimetoVisit: formData.bestTimetoVisit || "",
-  //     idealTripDuration: formData.idealTripDuration || "",
-  //     transport: [
-  //       {
-  //         mode: formData.mode,
-  //         from: formData.from,
-  //         end: formData.end,
-  //         distance: formData.distance,
-  //         duration: formData.duration,
-  //       },
-  //     ],
-  //     networkSettings: {
-  //       internetAvailability: formData.internetAvailability || "Moderate",
-  //       stdCode: formData.stdCode || "+91",
-  //       languageSpoken: formData.languageSpoken || [],
-  //       majorFestivals: formData.majorFestivals || [],
-  //       notesOrTips: formData.notesOrTips || "",
-  //     },
-  //     weatherInfo: {
-  //       season:
-  //         formData?.season?.map((season) => ({
-  //           title: season.title,
-  //           description: season.description,
-  //         })) || [],
-  //       nearestCity: formData.nearestCity || "",
-  //       peakSeason: formData.peakSeason || "",
-  //     },
-  //     placeTitle: formData.placeTitle || "",
-  //     placePopular: formData.placePopular || "N",
-  //     placeTop: formData.placeTop || "N",
-  //     mostPopular: formData.mostPopular || "N",
-  //   };
-
-  //   console.log(formattedData);
-  // };
+ 
   const handleSubmit = async () => {
     const formDataPayload = new FormData();
 
@@ -292,7 +247,7 @@ const Places = () => {
       setMessage("");
       setShowAlert(false);
       const response = await createPlaceData(formDataPayload);
-      console.log(response.data, "post");
+    
       fetchFilteredPlaces();
       if (response && response.status === 201) {
         setStatus("success");
@@ -322,7 +277,7 @@ const Places = () => {
         "name"
       );
       const data = response.data.data;
-      console.log(data, "fetch");
+     
 
       setPlaces(data || []);
       setTotalPlaces(response.data.total || 0);
@@ -353,7 +308,7 @@ const Places = () => {
 
   const handleEdit = async (place) => {
     setInitialData(place);
-    console.log(place, "place data");
+  
     setPlaceId(place._id);
     const images = [];
     if (place.images && place.images.length > 0) {
@@ -361,7 +316,7 @@ const Places = () => {
         images.push(imageUrl);
       }
     }
-    console.log(images, "copy");
+
 
     setFormData({
       name: place.name || "",
@@ -388,12 +343,10 @@ const Places = () => {
       placeTop: place.placeTop || "N",
       mostPopular: place.mostPopular || "N",
     });
-    console.log(formData.images, "after");
 
     setPlaceType(place.type || "city");
   };
   const handleUpdate = async () => {
-    console.log(formData);
 
     const formDataPayload = new FormData();
     const changes = {}; // To track changes
@@ -401,7 +354,7 @@ const Places = () => {
     // Helper function to append if a field has changed
     const appendIfChanged = (key, currentValue, initialValue) => {
       if (currentValue !== initialValue) {
-        console.log(`Field ${key} has changed. Appending to FormData.`);
+ 
         formDataPayload.append(key, currentValue);
         changes[key] = currentValue; // Track change
       }
@@ -477,8 +430,7 @@ const Places = () => {
         }
       }
     } else if (!formData.images || formData.images.length === 0) {
-      // If no images are present, do not append the "images" field at all
-      console.log("No changes made to images. Skipping the 'images' field.");
+      
     }
 
     try {
@@ -488,7 +440,7 @@ const Places = () => {
 
       // Submit updated fields only
       const response = await updatePlaceData(placeId, formDataPayload);
-      console.log(response.data, "update");
+     
 
       fetchFilteredPlaces();
 
@@ -515,13 +467,13 @@ const Places = () => {
   };
 
   const handleDelete = async () => {
-    console.log("Deleting place:", selectedPlace);
+   
     try {
       setStatus("");
       setMessage("");
       setShowAlert(false);
       const response = await deletePlaceData(selectedPlace._id);
-      console.log(response.data);
+      
       fetchFilteredPlaces();
       if (response && response.status === 201) {
         setStatus("success");

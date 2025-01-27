@@ -1,5 +1,7 @@
 import React from "react";
 import aboutus from "../../images/abt.png";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const AboutUs = () => {
   return (
     <div className=" about-us">
@@ -10,7 +12,7 @@ const AboutUs = () => {
       <hr />
       <div className="row text-center mb-4">
         <div className="col-12 d-flex flex-column gap-2">
-          <img
+          <LazyLoadImage
             src={aboutus}
             alt="Travel landscape"
             className="img-fluid hero-image mb-3 col-12"

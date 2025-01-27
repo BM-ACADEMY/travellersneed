@@ -46,7 +46,6 @@ const WriteReview = () => {
         }
         // Check if the token is expired
         if (decoded.exp * 1000 < Date.now()) {
-          console.log("Token has expired.");
           sessionStorage.removeItem(secretKey);
         }
       } catch (error) {

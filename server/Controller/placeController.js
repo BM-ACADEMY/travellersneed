@@ -29,8 +29,6 @@ exports.createPlace = async (req, res) => {
       mostPopular,
       idealTripDuration,
     } = req.body;
-    console.log(req.body,'body');
-    
 
     // Validate the type
     if (!["city", "sub_place"].includes(type)) {
@@ -47,8 +45,6 @@ exports.createPlace = async (req, res) => {
 
     // Move uploaded files to the dynamically created folder
     const images = [];
-    console.log(req.files,'file');
-    
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         const newFileName = `${Date.now()}-${file.originalname}`;
@@ -327,47 +323,12 @@ exports.getSubPlaceByName = async (req, res) => {
   }
 };
 
-// 4. Update a place
-// exports.updatePlace = async (req, res) => {
-//   try {
-//     const { placeId } = req.params;
-//     const updatedData = req.body;
-//       console.log(req.body,'update');
-//       console.log(req.files,'file');
-      
-//     // Handle file uploads
-//     if (req.files) {
-//       const placeFolder = await createPlaceFolder(req.body.name || "default");
-//       const images = [];
-//       for (const file of req.files) {
-//         const newFileName = `${Date.now()}-${file.originalname}`;
-//         const destinationPath = path.join(placeFolder, newFileName);
-//         await fs.move(file.path, destinationPath);
-//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
-//       }
-//       updatedData.images = images;
-//     }
 
-//     const updatedPlace = await Place.findByIdAndUpdate(placeId, updatedData, {
-//       new: true,
-//     });
 
-//     if (!updatedPlace) {
-//       return res.status(404).json({ message: "Place not found" });
-//     }
-
-//     res.status(201).json({ message: "Place updated successfully", place: updatedPlace });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 exports.updatePlace = async (req, res) => {
   try {
     const { placeId } = req.params;
     const updatedData = req.body;
-
-    console.log(req.body, "update");
-    console.log(req.files, "file");
 
     // Handle file uploads only if req.files exists and is not empty
     if (req.files && req.files.length > 0) {

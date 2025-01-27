@@ -9,7 +9,6 @@ const Wildlife_category = ({ wildlifeData }) => {
     var BASE_URL = import.meta.env.VITE_BASE_URL;
 
     useEffect(() => {
-        console.log('Wildlife Data:', wildlifeData);
     }, [wildlifeData]);
 
     return (

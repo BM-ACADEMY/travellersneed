@@ -5,10 +5,10 @@ import axios from "axios";
 import AlertMessage from "../../../reusableComponents/AlertMessage";
 import {createBooking} from "../../../services/ApiService";
 const BookingModal = ({ baseFare, packageId }) => {
-  console.log(baseFare);
+
 
   const { user, logout } = useUser();
-  console.log(user);
+
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState("tab1");
@@ -83,7 +83,6 @@ const BookingModal = ({ baseFare, packageId }) => {
         city: formData.city,
         pincode: formData.pincode,
       };
-      console.log(bookingData);
       setLoading(true);
       // Send POST request to the backend
       const response = await createBooking(bookingData);
@@ -99,7 +98,7 @@ const BookingModal = ({ baseFare, packageId }) => {
         setShowAlert(true); // Show error alert
       }
     
-      console.log("Booking confirmed:", response.data);
+
       handleClose();
     } catch (error) {
       setLoading(false);

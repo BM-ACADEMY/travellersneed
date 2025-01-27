@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, setSidebarOpen }) => {
   return (
     <>
       {/* Desktop Sidebar (Always visible on larger screens) */}
-      <div className="desktop-sidebar fw-bold">
+      <div className="desktop-sidebar fw-bold ">
         {/* Sidebar Logo */}
         <div className="sidebar-logo">
           <img src={logo} alt="Logo" className="img-fluid mb-4" />

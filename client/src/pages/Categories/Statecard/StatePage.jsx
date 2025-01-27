@@ -15,11 +15,13 @@ import {
 import ReviewForState from "../../Reviews/ReviewForState";
 import ReusableModal from "../../model/ReusableModel";
 import QuoteForm from "../../model/QuoteForm";
+
+
 const StatePage = () => {
   const { stateName } = useParams();
   const decodedStateName = decodeURIComponent(stateName);
-  console.log(decodedStateName,'decode');
-  
+ 
+  const [imageLoaded, setImageLoaded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const [stateData, setStateData] = useState(null);

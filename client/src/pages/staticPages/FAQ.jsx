@@ -4,7 +4,8 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import faq from "../../images/FAQLogo.png";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -59,7 +60,7 @@ const FAQ = () => {
       </div>
       <hr />
       <div className="text-center mb-4">
-        <img src={faq} alt="FAQ Logo" className="img-fluid" style={{ maxWidth: '500px' }} />
+        <LazyLoadImage src={faq} alt="FAQ Logo" className="img-fluid" style={{ maxWidth: '500px' }} />
       </div>
 
       {/* FAQ Content */}

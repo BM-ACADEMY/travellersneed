@@ -7,7 +7,7 @@ const Top_category = ({ topDestinationsData }) => {
   }
   var BASE_URL = import.meta.env.VITE_BASE_URL;
   useEffect(() => {
-    console.log("Top Destinations Data:", topDestinationsData);
+
   }, [topDestinationsData]);
 
   return (

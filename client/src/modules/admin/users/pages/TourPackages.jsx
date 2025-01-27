@@ -125,7 +125,7 @@ const TourPackages = () => {
     return new File([blob], filename, { type: blob.type });
   }
   const fetchSubCities = async (cityName) => {
-    if (!cityName) console.log("cityname is empty");
+    if (!cityName);
     try {
       setLoading(true);
       const response = await fetchSubCitiesByCityname(cityName);
@@ -208,7 +208,7 @@ const TourPackages = () => {
       setStatus("");
       setMessage("");
       setShowAlert(false);
-      console.log("Submitting Data: ", formDataPayload);
+     
       const response = await createTourPlan(formDataPayload);
       if (response && response.status === 201) {
         setSuccessMessage(true);
@@ -232,7 +232,7 @@ const TourPackages = () => {
 
   const handleEdit = async (tourPlan) => {
     setInitialData(tourPlan);
-    console.log(tourPlan, "tourPlan data");
+  
     setTourPlanId(tourPlan._id);
     // Prepare images array
     const images = [];
@@ -241,7 +241,7 @@ const TourPackages = () => {
         images.push(imageUrl); // Add image URLs directly; convert to File if needed
       }
     }
-    console.log(images, "image copy");
+    
 
     // Patch the fields from `tourPlan` to `formData`
     setFormData({
@@ -266,12 +266,12 @@ const TourPackages = () => {
       themeId: tourPlan.themeId || [], // Ensure it's an array
       images: images, // Use the prepared images array
     });
-    console.log(formData.images, "after");
+
   };
 
   const handleUpdate = async () => {
     setLoading(true);
-    console.log(formData);
+   
 
     const formDataPayload = new FormData();
 
@@ -280,7 +280,7 @@ const TourPackages = () => {
 
     // Helper to append field to FormData if changed
     const appendIfChanged = (key, value) => {
-      console.log(`Comparing ${key}:`, initialData[key], "with", value); // Debugging
+
       if (
         initialData &&
         initialData[key] !== undefined &&
@@ -347,14 +347,14 @@ const TourPackages = () => {
         if (typeof image === "string") {
           // Check if the URL is unchanged
           if (!initialData.images.includes(image)) {
-            console.log("same");
+          
 
             const file = await urlToFile(image, "image.jpg"); // Convert URL to File
             formDataPayload.append("images", file);
           }
         } else if (image instanceof File) {
           // New image added by the user
-          console.log("new");
+        
 
           formDataPayload.append("images", image);
         }
@@ -366,7 +366,7 @@ const TourPackages = () => {
       setStatus("");
       setMessage("");
       setShowAlert(false);
-      console.log("Submitting Data: ", formDataPayload);
+
       const response = await updateTourPlan(TourPlanId, formDataPayload);
       if (response && response.status === 201) {
         setSuccessMessage(true);

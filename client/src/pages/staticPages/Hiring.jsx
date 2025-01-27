@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Nature from "../../images/spring.jpg";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const Hiring = () => {
   const positions = [
     {
@@ -104,7 +105,7 @@ const Hiring = () => {
       </div>
       <hr />
       <div className="hero-imageH">
-        <img
+        <LazyLoadImage
           src={Nature}
           className="img-fluid hero-image mb-3 col-12"
           style={{ height: "60vh" }}

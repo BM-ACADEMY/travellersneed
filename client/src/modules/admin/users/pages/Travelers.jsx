@@ -97,7 +97,6 @@ const Travelers = () => {
   const fetchUserList = async () => {
     try {
       const response = await fetchUsersData(page, search, "username");
-      console.log(response.data); // Log the response to check the format
       if (response && Array.isArray(response.data.users)) {
         setUsers(response.data.users);
       } else {
@@ -166,7 +165,7 @@ const Travelers = () => {
         }
       } catch (error) {
         // Handle error
-        console.log(error);
+       
 
         setStatus("error", error);
         setMessage("Something went wrong!");
@@ -311,8 +310,6 @@ const Travelers = () => {
     try {
       const response = await fetchUserByIdData(id);
       setUserDetails(response.data);
-      console.log(response);
-
       setShowDetailsModal(true);
     } catch (error) {
       console.error("Error fetching user details", error);

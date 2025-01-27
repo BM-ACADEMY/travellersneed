@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import './PlacePage.css';
 import ReusableModal from "../model/ReusableModel";
 import QuoteForm from "../model/QuoteForm";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 const PlacePage = () => {
@@ -88,7 +90,7 @@ const PlacePage = () => {
         {/* Image and Details */}
         <div className="col-md-6">
           {placeDetails.images && placeDetails.images.length > 0 && (
-            <img
+            <LazyLoadImage
               src={constructImageURL(placeDetails.images[0])}
               alt={placeDetails.name}
               style={{

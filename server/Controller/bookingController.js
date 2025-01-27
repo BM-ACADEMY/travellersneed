@@ -105,7 +105,7 @@ exports.getBookingsByUser = async (req, res) => {
     }
 
     // Return the paginated results with total count for pagination info
-    res.json({
+    res.status(201).json({
       message: `Bookings for user ${userId} retrieved successfully`,
       bookings,
       totalBookings,
