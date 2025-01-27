@@ -445,7 +445,7 @@ const Blog = () => {
 const generateImageUrl = (imagePath) => {
   if (!imagePath) return "placeholder.jpg";
   const parts = imagePath.split("\\");
-  const title = parts[0]?.toLowerCase() || "";
+  const title = parts[0] || "";
   const fileName = parts[1] || "";
   return `${GET_IMAGE_FOR_BLOG_URL}?title=${encodeURIComponent(title)}&fileName=${encodeURIComponent(fileName)}`;
 };

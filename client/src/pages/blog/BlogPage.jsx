@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +19,7 @@ import {fetchBlogByTitle} from "../../modules/admin/services/ApiService";
 
 const BlogPage = () => {
   const { title } = useParams(); // Get the blog title from the route
+  const navigate=useNavigate();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(false); // Initialize loading state as false
   const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -62,12 +63,17 @@ const BlogPage = () => {
     }
   }, [title]); // Depend on 'title' change
 
+  const handleBook=(cityName)=>{
+    navigate(`/tour-packages/${encodeURIComponent(cityName)}`)
+  }
+
+
   if (loading) {
-    return <div className="text-center mt-5">Loading...</div>; // Show loading until blog is available
+    return <div className="text-center mt-5">Loading...</div>; 
   }
 
   if (!blog) {
-    return <div className="text-center mt-5">Blog not found.</div>; // Show if no blog is found
+    return <div className="text-center mt-5">Blog not found.</div>; 
   }
 
   return (
@@ -122,7 +128,8 @@ const BlogPage = () => {
               />
               <p>{city.description}</p>
               <a
-                href={city.link}
+             
+                onClick={()=>handleBook(city.cityName)}
                 className="btn "
                 target="_blank"
                 rel="noopener noreferrer"
