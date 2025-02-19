@@ -5,12 +5,12 @@ import PackageCard from '../PackageCard/PackageCard';
 const CityView = ({ stateName }) => {
   const [cities, setCities] = useState({});
   const [error, setError] = useState(null);
-
+  var BASE_URL = import.meta.env.VITE_BASE_URL;
   useEffect(() => {
     const fetchCities = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/packages/cities-by-state/${encodeURIComponent(stateName)}`
+          `${BASE_URL}/packages/cities-by-state/${encodeURIComponent(stateName)}`
         );
         setCities(response.data.data);
       } catch (err) {

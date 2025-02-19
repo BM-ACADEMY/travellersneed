@@ -89,7 +89,7 @@ const Places = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [initialData, setInitialData] = useState(null);
 
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  var BASE_URL = import.meta.env.VITE_BASE_URL;
   const FETCH_PLACE_IMAGE_URL = import.meta.env.VITE_PLACE_IMAGE.startsWith(
     "http"
   )
@@ -122,10 +122,10 @@ const Places = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/address/get-all-addresses-for-places"
+          `${BASE_URL}/address/get-all-addresses-for-places`
         );
         const cityResponse = await fetch(
-          "http://localhost:3000/api/places/get-all-cities"
+          `${BASE_URL}/places/get-all-cities`
         );
         const data = await response.json();
         const cityData = await cityResponse.json();

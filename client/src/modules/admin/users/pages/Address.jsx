@@ -29,7 +29,7 @@ const addressReducer = (state, action) => {
 const Address = () => {
   const { formData } = useAddressContext();
  
-
+  var BASE_URL = import.meta.env.VITE_BASE_URL;
   const [state, dispatch] = useReducer(addressReducer, {
     country: "",
     state: "",
@@ -198,7 +198,7 @@ const Address = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/address/update-address/${state.addressId}`,
+        `${BASE_URL}/address/update-address/${state.addressId}`,
         finalFormData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

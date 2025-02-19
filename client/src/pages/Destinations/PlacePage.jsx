@@ -55,7 +55,7 @@ const PlacePage = () => {
       try {
         const originalName = formatNameToOriginal(placeName);
         const response = await fetch(
-          `http://localhost:3000/api/places/get-sub-places?name=${encodeURIComponent(
+          `${BASE_URL}/places/get-sub-places?name=${encodeURIComponent(
             originalName
           )}`
         );

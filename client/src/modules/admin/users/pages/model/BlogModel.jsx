@@ -12,7 +12,7 @@ const BlogModal = ({ show, onHide, blog, setBlogs, mode, handleDelete }) => {
     images: [],
     cityDetails: [{ cityName: "", description: "", link: "" }],
   });
-
+  var BASE_URL = import.meta.env.VITE_BASE_URL;
   // Populate form data or reset form based on `blog` and `mode`
   useEffect(() => {
     if (blog) {
@@ -107,7 +107,7 @@ const BlogModal = ({ show, onHide, blog, setBlogs, mode, handleDelete }) => {
             <div>
               <h6>Images</h6>
               {formData.images.map((img, index) => (
-                <img key={index} src={`http://localhost:3000/${img}`} alt="Blog" style={{ width: "100px", margin: "5px" }} />
+                <img key={index} src={`${BASE_URL}/${img}`} alt="Blog" style={{ width: "100px", margin: "5px" }} />
               ))}
             </div>
             <div>
