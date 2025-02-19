@@ -6,7 +6,7 @@
     city: { type: String, required: true },
     description: { type: String, required: true },
     images: {
-      type: [String], // Array of image URLs or file paths
+      type: [String], 
       default: [],
       validate: {
         validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
