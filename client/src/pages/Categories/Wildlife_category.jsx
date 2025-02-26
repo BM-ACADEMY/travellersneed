@@ -42,7 +42,7 @@ const Wildlife_category = ({ wildlifeData }) => {
                         <div key={index} className="col-md-4 col-lg-3 mb-4">
                             <StateCard
                                 stateName={state} // State name
-                                stateImage={stateImageURL} // Image URL
+                                stateImage={image} // Image URL
                                 startingPrice={startingPrice} // Starting price
                                 cityCount={tourPlanCount} // Number of tour plans
                                 packageName={firstPackageName} // First package name

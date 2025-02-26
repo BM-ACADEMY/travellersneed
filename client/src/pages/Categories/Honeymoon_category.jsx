@@ -43,7 +43,7 @@ const Honeymoon_category = ({ honeymoonData }) => {
                         <div key={index} className="col-md-4 col-lg-2 mb-4">
                             <StateCard
                                 stateName={stateName}
-                                stateImage={stateImageURL} // Use dynamically constructed image URL
+                                stateImage={imagePath} // Use dynamically constructed image URL
                                 startingPrice={startingPrice}
                                 cityCount={cityCount} // Number of cities
                                 packageName={firstPackage} // First package title

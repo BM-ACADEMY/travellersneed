@@ -35,7 +35,7 @@ const Top_category = ({ topDestinationsData }) => {
             <div key={index} className="col-md-4 col-lg-3 mb-4">
               <StateCard
                 stateName={stateName}
-                stateImage={stateImageURL}
+                stateImage={image}
                 startingPrice={startingPrice}
                 cityCount={tourPlanCount}
                 packageName={firstTourPlan}

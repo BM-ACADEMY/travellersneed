@@ -17,22 +17,27 @@ const Top_destinations = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   var BASE_URL = import.meta.env.VITE_BASE_URL;
-  const constructImageURL = (imagePath) => {
-    const parts = imagePath?.split("\\");
-    let placeName = "";
-    let fileName = "";
-  
-    if (parts?.length >= 2) {
-      placeName = parts[0];
-      fileName = parts[1];
-    } else {
-      console.warn("Unexpected image path format:", imagePath);
-    }
-  
-    return `${BASE_URL}/places/get-image?placeName=${encodeURIComponent(
-      placeName
-    )}&fileName=${encodeURIComponent(fileName)}`;
-  };
+
+const constructImageURL = (imagePath) => {
+  console.log(imagePath, 'askdskdmsk');
+
+  // Use regular expression to split by both \ and /
+  const parts = imagePath?.split(/[\\/]/);
+  let placeName = "";
+  let fileName = "";
+
+  if (parts?.length >= 2) {
+    placeName = parts[0];
+    fileName = parts[1];
+  } else {
+    console.warn("Unexpected image path format:", imagePath);
+  }
+
+  return `${BASE_URL}/places/get-image?placeName=${encodeURIComponent(
+    placeName
+  )}&fileName=${encodeURIComponent(fileName)}`;
+};
+
   
  useEffect(() => {
     const fetchDestinations = async () => {
@@ -42,15 +47,18 @@ const Top_destinations = () => {
         );
 
         const { statePopularCities, countryPopularCities } = response.data;
+console.log(countryPopularCities,'des');
 
         const transformedCountryPopularCities = countryPopularCities.map((city) => ({
           ...city,
-          imageURL: constructImageURL(city.images?.[0]),
+          // imageURL: constructImageURL(city.images?.[0]),
+          imageURL:city.images?.[0],
         }));
 
         const transformedStatePopularCities = statePopularCities.map((city) => ({
           ...city,
-          imageURL: constructImageURL(city.images?.[0]),
+          // imageURL: constructImageURL(city.images?.[0]),
+          imageURL:city.images?.[0],
         }));
 
         setStatePopularCities(transformedStatePopularCities || []);

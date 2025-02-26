@@ -39,20 +39,24 @@ const AddressTable = ({ onDelete, onEdit }) => {
 const GET_IMAGE_FOR_ADDRESS_URL = import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS.startsWith("http")
 ? import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS
 : `${BASE_URL}${import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS}`;
-  const getImageURL = (imagePath) => {
-    let stateImageURL = "";
-    if (imagePath) {
-      const parts = imagePath.split("\\"); // Split the path by backslashes
-      const fileName = parts.pop(); // Get the file name
-      const stateCode = parts.length > 0 ? parts[0] : "Unknown"; // Get the state code
-  
-      // Construct and return the image URL using the .env variable
-      stateImageURL = `${GET_IMAGE_FOR_ADDRESS_URL}?state=${encodeURIComponent(
-        stateCode
-      )}&fileName=${encodeURIComponent(fileName)}`;
-    }
-    return stateImageURL;
-  };
+
+
+const getImageURL = (imagePath) => {
+  let stateImageURL = "";
+  if (imagePath) {
+    // Split the path by both forward and backward slashes
+    const parts = imagePath.split(/[/\\]+/); 
+    const fileName = parts.pop(); // Get the file name
+    const stateCode = parts.length > 0 ? parts[0] : "Unknown"; // Get the state code
+
+    // Construct and return the image URL using the .env variable
+    stateImageURL = `${GET_IMAGE_FOR_ADDRESS_URL}?state=${encodeURIComponent(
+      stateCode
+    )}&fileName=${encodeURIComponent(fileName)}`;
+  }
+  return stateImageURL;
+};
+
   
   const fetchAddresses = async () => {
     const { country, state, city } = filters;
@@ -154,7 +158,8 @@ const GET_IMAGE_FOR_ADDRESS_URL = import.meta.env.VITE_GET_IMAGE_FOR_ADDRESS.sta
               <td>
                 {address.images && address.images.length > 0 && (
                   <img
-                    src={getImageURL(address.images[0])}
+                    // src={getImageURL(address.images[0])}
+                    src={address.images[0]}
                     alt={address.cityName}
                     style={{ width: "100px", height: "auto" }}
                   />

@@ -147,7 +147,8 @@ const BlogPage = () => {
             >
               <h4 style={{ color: "#ef156c" }}>{city.cityName}</h4>
               <motion.img
-                src={generateImageUrl(blog.images[imageIndex])}
+                // src={generateImageUrl(blog.images[imageIndex])}
+                src={blog?.images[imageIndex]}
                 alt={city.cityName}
                 className="img-fluid img-responsive"
                 style={{

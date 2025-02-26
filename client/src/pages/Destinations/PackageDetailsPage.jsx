@@ -45,20 +45,21 @@ const PackageDetailsPage = () => {
 
   var BASE_URL = import.meta.env.VITE_BASE_URL;
   const constructImageURL = (imagePath) => {
-    const parts = imagePath?.split("\\");
-    let placeName = "";
-    let fileName = "";
+    // const parts = imagePath?.split("\\");
+    // let placeName = "";
+    // let fileName = "";
   
-    if (parts?.length >= 2) {
-      placeName = parts[0];
-      fileName = parts[1];
-    } else {
-      console.warn("Unexpected image path format:", imagePath);
-    }
+    // if (parts?.length >= 2) {
+    //   placeName = parts[0];
+    //   fileName = parts[1];
+    // } else {
+    //   console.warn("Unexpected image path format:", imagePath);
+    // }
   
-    return `${BASE_URL}/places/get-image?placeName=${encodeURIComponent(
-      placeName
-    )}&fileName=${encodeURIComponent(fileName)}`;
+    // return `${BASE_URL}/places/get-image?placeName=${encodeURIComponent(
+    //   placeName
+    // )}&fileName=${encodeURIComponent(fileName)}`;
+    return imagePath
   };
   
   useEffect(() => {

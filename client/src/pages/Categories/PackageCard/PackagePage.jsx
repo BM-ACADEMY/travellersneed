@@ -321,7 +321,8 @@ const PackagePage = () => {
                 // Show a single image if only one image is available
 
                 <LazyLoadImage
-                  src={packageImageURLs[0]}
+                  // src={packageImageURLs[0]}
+                  src={images[0]}
                   alt="Tour Image"
                   style={{
                     width: "100%",

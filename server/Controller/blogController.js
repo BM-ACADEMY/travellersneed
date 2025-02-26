@@ -1,7 +1,7 @@
 const Blog = require("../Models/blogModel");
 const fs = require("fs-extra");
 const path = require("path");
-
+const cloudinary = require("../utils/cloudinary");
 const UPLOADS_ROOT = path.join(__dirname, "..", "uploads", "blogs");
 
 // Helper function: Create a dynamic folder structure for category or blog state
@@ -12,40 +12,73 @@ const createDynamicFolder = async (category) => {
 };
 
 // 1. Create a new blog with dynamic image upload
+// exports.createBlog = async (req, res) => {
+//   try {
+//     const { title, author,date, description, cityDetails } = req.body;
+//     // Create category folder dynamically (can be blog category or something else)
+//     const categoryFolder = await createDynamicFolder(title);
+
+//     // Process image uploads
+//     const images = [];
+//     if (req.files) {
+//       for (const file of req.files) {
+//         const timestamp = Date.now();
+//         const newFileName = `${file.fieldname}-${timestamp}${path.extname(
+//           file.originalname
+//         )}`;
+//         const destinationPath = path.join(categoryFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//     }
+
+//     // Create a new blog document
+//     const newBlog = new Blog({
+//       title,
+//       date,
+//       author,
+//       images,
+//       description,
+//       cityDetails:cityDetails ? JSON.parse(cityDetails) : [],
+//     });
+
+//     await newBlog.save();
+//     res
+//       .status(201)
+//       .json({ message: "Blog created successfully", blog: newBlog });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.createBlog = async (req, res) => {
   try {
-    const { title, author,date, description, cityDetails } = req.body;
-    // Create category folder dynamically (can be blog category or something else)
-    const categoryFolder = await createDynamicFolder(title);
+    const { title, author, date, description, cityDetails } = req.body;
 
-    // Process image uploads
+    // Upload images to Cloudinary
     const images = [];
     if (req.files) {
       for (const file of req.files) {
-        const timestamp = Date.now();
-        const newFileName = `${file.fieldname}-${timestamp}${path.extname(
-          file.originalname
-        )}`;
-        const destinationPath = path.join(categoryFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `blogs/${title.replace(/ /g, "_")}`, // Store images in title folder
+          public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
+        });
+        images.push(result.secure_url); // Store Cloudinary URL
       }
     }
 
-    // Create a new blog document
+    // Create new Blog
     const newBlog = new Blog({
       title,
       date,
       author,
       images,
       description,
-      cityDetails:cityDetails ? JSON.parse(cityDetails) : [],
+      cityDetails: cityDetails ? JSON.parse(cityDetails) : [],
     });
 
     await newBlog.save();
-    res
-      .status(201)
-      .json({ message: "Blog created successfully", blog: newBlog });
+    res.status(201).json({ message: "Blog created successfully", blog: newBlog });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -127,12 +160,56 @@ exports.getBlogByTitle = async (req, res) => {
 
 
 // 4. Update a blog by ID
+// exports.updateBlog = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const updatedData = req.body;
+
+//     // Ensure that cityDetails is a valid JSON string
+//     if (updatedData.cityDetails) {
+//       try {
+//         updatedData.cityDetails = JSON.parse(updatedData.cityDetails);
+//       } catch (error) {
+//         return res.status(400).json({ error: "Invalid JSON format for cityDetails." });
+//       }
+//     }
+
+//     // Handle file uploads if provided
+//     if (req.files && req.files.length > 0) {
+//       const categoryFolder = await createDynamicFolder(updatedData.title || "default");
+//       const images = [];
+//       for (const file of req.files) {
+//         const timestamp = Date.now();
+//         const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
+//         const destinationPath = path.join(categoryFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//       updatedData.images = images;  // Only update images if new files were uploaded
+//     }
+
+//     // If no new images are uploaded, keep existing images
+//     if (!updatedData.images && currentBlog && currentBlog.images) {
+//       updatedData.images = currentBlog.images;  // Retain previous images
+//     }
+
+//     // Update the blog in the database
+//     const updatedBlog = await Blog.findByIdAndUpdate(id, updatedData, { new: true });
+//     if (!updatedBlog) {
+//       return res.status(404).json({ message: "Blog not found." });
+//     }
+
+//     res.json({ message: "Blog updated successfully", blog: updatedBlog });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 exports.updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
 
-    // Ensure that cityDetails is a valid JSON string
+    // Validate JSON for cityDetails
     if (updatedData.cityDetails) {
       try {
         updatedData.cityDetails = JSON.parse(updatedData.cityDetails);
@@ -141,31 +218,36 @@ exports.updateBlog = async (req, res) => {
       }
     }
 
-    // Handle file uploads if provided
-    if (req.files && req.files.length > 0) {
-      const categoryFolder = await createDynamicFolder(updatedData.title || "default");
-      const images = [];
-      for (const file of req.files) {
-        const timestamp = Date.now();
-        const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
-        const destinationPath = path.join(categoryFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
-      }
-      updatedData.images = images;  // Only update images if new files were uploaded
-    }
-
-    // If no new images are uploaded, keep existing images
-    if (!updatedData.images && currentBlog && currentBlog.images) {
-      updatedData.images = currentBlog.images;  // Retain previous images
-    }
-
-    // Update the blog in the database
-    const updatedBlog = await Blog.findByIdAndUpdate(id, updatedData, { new: true });
-    if (!updatedBlog) {
+    // Fetch current blog
+    const currentBlog = await Blog.findById(id);
+    if (!currentBlog) {
       return res.status(404).json({ message: "Blog not found." });
     }
 
+    // Upload new images and delete old ones if new images are provided
+    if (req.files && req.files.length > 0) {
+      // Delete old images from Cloudinary
+      for (const imageUrl of currentBlog.images) {
+        const publicId = imageUrl.split("/").slice(-2).join("/").split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      }
+
+      // Upload new images
+      const images = [];
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `blogs/${updatedData.title || currentBlog.title}`,
+          public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
+        });
+        images.push(result.secure_url);
+      }
+      updatedData.images = images;
+    } else {
+      updatedData.images = currentBlog.images; // Retain existing images if none are uploaded
+    }
+
+    // Update blog
+    const updatedBlog = await Blog.findByIdAndUpdate(id, updatedData, { new: true });
     res.json({ message: "Blog updated successfully", blog: updatedBlog });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -173,28 +255,53 @@ exports.updateBlog = async (req, res) => {
 };
 
 
-
 // 5. Delete a blog by ID
+// exports.deleteBlog = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const blog = await Blog.findByIdAndDelete(id);
+
+//     if (!blog) {
+//       return res.status(404).json({ message: "Blog not found." });
+//     }
+
+//     // Delete category folder if no other blogs exist for this category
+//     const categoryFolder = path.join(
+//       UPLOADS_ROOT,
+//       blog.title.replace(/ /g, "_")
+//     );
+//     const categoryRecords = await Blog.find({ title: blog.title });
+//     if (categoryRecords.length === 0) {
+//       await fs.remove(categoryFolder);
+//     }
+
+//     res.json({ message: "Blog deleted successfully." });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.deleteBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    const blog = await Blog.findByIdAndDelete(id);
+    const blog = await Blog.findById(id);
 
     if (!blog) {
       return res.status(404).json({ message: "Blog not found." });
     }
 
-    // Delete category folder if no other blogs exist for this category
-    const categoryFolder = path.join(
-      UPLOADS_ROOT,
-      blog.title.replace(/ /g, "_")
-    );
-    const categoryRecords = await Blog.find({ title: blog.title });
-    if (categoryRecords.length === 0) {
-      await fs.remove(categoryFolder);
+    // Delete images from Cloudinary
+    if (blog.images && blog.images.length > 0) {
+      for (const imageUrl of blog.images) {
+        const publicId = imageUrl.split("/").slice(-2).join("/").split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      }
     }
 
-    res.json({ message: "Blog deleted successfully." });
+    // Delete blog from database
+    await Blog.findByIdAndDelete(id);
+
+    res.json({ message: "Blog and associated images deleted successfully." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

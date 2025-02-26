@@ -84,7 +84,8 @@ const ThemePage = () => {
       <div
         className="theme-header"
         style={{
-          backgroundImage: `url(${themeImageURL})`,
+          // backgroundImage: `url(${themeImageURL})`,
+          backgroundImage: `url(${themeDetails.themeImage})`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           height: "400px",

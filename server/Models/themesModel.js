@@ -6,17 +6,17 @@ const themeSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      enum: ["honeymoon", "hillstations", "wildlife", "pilgrimage", "heritage", "beach"],
+      enum: ["honeymoon", "hillstations", "wildlife", "pilgrimage", "heritage", "beach","adventure"],
       lowercase: true,
     },
     description: { type: String, required: true },
     themeImage: {
       type: [String], // Array of image URLs or file paths
       default: [],
-      validate: {
-        validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
-        message: "One or more image paths are invalid",
-      },
+      // validate: {
+      //   validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
+      //   message: "One or more image paths are invalid",
+      // },
     },
   },
   { timestamps: true }

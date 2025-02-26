@@ -4,6 +4,7 @@ const path = require("path");
 const Address = require("../Models/addressModel");
 const UPLOADS_ROOT = path.join(__dirname, "..", "uploads", "places");
 
+const cloudinary = require("../utils/cloudinary");
 // Helper function: Create folder dynamically for a place
 const createPlaceFolder = async (placeName) => {
   const folder = path.join(UPLOADS_ROOT, placeName.replace(/ /g, "_"));
@@ -12,6 +13,88 @@ const createPlaceFolder = async (placeName) => {
 };
 
 // 1. Create a city or sub-place
+// exports.createPlace = async (req, res) => {
+//   try {
+//     const {
+//       name,
+//       description,
+//       state,
+//       type, // city or sub_place
+//       parentPlace,
+//       transport,
+//       networkSettings,
+//       weatherInfo,
+//       placeTitle,
+//       placePopular,
+//       placeTop,
+//       mostPopular,
+//       idealTripDuration,
+//     } = req.body;
+
+//     // Validate the type
+//     if (!["city", "sub_place"].includes(type)) {
+//       return res.status(400).json({ message: "Invalid type. Must be 'city' or 'sub_place'." });
+//     }
+
+//     // Validate parentPlace for sub_place
+//     if (type === "sub_place" && !parentPlace) {
+//       return res.status(400).json({ message: "Sub-places must have a parent place." });
+//     }
+
+//     // Create folder dynamically
+//     const placeFolder = await createPlaceFolder(name);
+
+//     // Move uploaded files to the dynamically created folder
+//     const images = [];
+//     if (req.files && req.files.length > 0) {
+//       for (const file of req.files) {
+//         const newFileName = `${Date.now()}-${file.originalname}`;
+//         const destinationPath = path.join(placeFolder, newFileName);
+
+//         // Move file from temp folder to destination
+//         await fs.move(file.path, destinationPath);
+
+//         // Store relative path for the image
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//     }
+
+//     // Save the place details in the database
+//     const newPlace = new Place({
+//       name,
+//       description,
+//       state,
+//       type,
+//       parentPlace: type === "sub_place" ? parentPlace : null,
+//       images,
+//       transport: transport ? JSON.parse(transport) : [],
+//       networkSettings: networkSettings ? JSON.parse(networkSettings) : {},
+//       weatherInfo: weatherInfo ? JSON.parse(weatherInfo) : {},
+//       placeTitle,
+//       placePopular,
+//       placeTop,
+//       mostPopular,
+//       idealTripDuration,
+//     });
+
+//     await newPlace.save();
+
+//     // If sub_place, update the parentPlace
+//     if (type === "sub_place" && parentPlace) {
+//       await Place.findByIdAndUpdate(parentPlace, {
+//         $addToSet: { subPlaces: newPlace._id },
+//       });
+//     }
+
+//     res.status(201).json({ message: "Place created successfully", place: newPlace });
+//   } catch (error) {
+//     console.error("Error while creating place:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+
+// };
+
+
 exports.createPlace = async (req, res) => {
   try {
     const {
@@ -40,25 +123,18 @@ exports.createPlace = async (req, res) => {
       return res.status(400).json({ message: "Sub-places must have a parent place." });
     }
 
-    // Create folder dynamically
-    const placeFolder = await createPlaceFolder(name);
-
-    // Move uploaded files to the dynamically created folder
-    const images = [];
+    // Upload images to Cloudinary
+    let images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const newFileName = `${Date.now()}-${file.originalname}`;
-        const destinationPath = path.join(placeFolder, newFileName);
-
-        // Move file from temp folder to destination
-        await fs.move(file.path, destinationPath);
-
-        // Store relative path for the image
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `places/${name.replace(/ /g, "_")}`,
+        });
+        images.push(result.secure_url); // Store Cloudinary URLs
       }
     }
 
-    // Save the place details in the database
+    // Save place details in database
     const newPlace = new Place({
       name,
       description,
@@ -78,7 +154,7 @@ exports.createPlace = async (req, res) => {
 
     await newPlace.save();
 
-    // If sub_place, update the parentPlace
+    // If sub_place, update parent place
     if (type === "sub_place" && parentPlace) {
       await Place.findByIdAndUpdate(parentPlace, {
         $addToSet: { subPlaces: newPlace._id },
@@ -90,8 +166,8 @@ exports.createPlace = async (req, res) => {
     console.error("Error while creating place:", error);
     res.status(500).json({ error: error.message });
   }
-
 };
+
 
 exports.getAllCities = async (req, res) => {
   try {
@@ -127,7 +203,7 @@ exports.getAllCities = async (req, res) => {
       mustVisit: city.mustVisit,
       placePopular: city.placePopular,
       mostPopular: city.mostPopular,
-      address: city.state, // Include state details
+      address: city.state, 
     }));
 
     // Return the cities array
@@ -323,70 +399,125 @@ exports.getSubPlaceByName = async (req, res) => {
   }
 };
 
-
-
 exports.updatePlace = async (req, res) => {
   try {
     const { placeId } = req.params;
     const updatedData = req.body;
 
-    // Handle file uploads only if req.files exists and is not empty
+    // Handle new image uploads
     if (req.files && req.files.length > 0) {
-      const placeFolder = await createPlaceFolder(req.body.name || "default");
-      const images = [];
+      let uploadedImages = [];
       for (const file of req.files) {
-        const newFileName = `${Date.now()}-${file.originalname}`;
-        const destinationPath = path.join(placeFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `places/${updatedData.name.replace(/ /g, "_")}`,
+        });
+        uploadedImages.push(result.secure_url);
       }
-      updatedData.images = images; // Only update images if new files are uploaded
-    } else {
-      delete updatedData.images; // Do not overwrite the images field if no new files
+      updatedData.images = uploadedImages;
     }
 
-    const updatedPlace = await Place.findByIdAndUpdate(placeId, updatedData, {
-      new: true,
-    });
+    const updatedPlace = await Place.findByIdAndUpdate(placeId, updatedData, { new: true });
 
     if (!updatedPlace) {
       return res.status(404).json({ message: "Place not found" });
     }
 
-    res.status(201).json({ message: "Place updated successfully", place: updatedPlace });
+    res.status(200).json({ message: "Place updated successfully", place: updatedPlace });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// exports.updatePlace = async (req, res) => {
+//   try {
+//     const { placeId } = req.params;
+//     const updatedData = req.body;
+
+//     // Handle file uploads only if req.files exists and is not empty
+//     if (req.files && req.files.length > 0) {
+//       const placeFolder = await createPlaceFolder(req.body.name || "default");
+//       const images = [];
+//       for (const file of req.files) {
+//         const newFileName = `${Date.now()}-${file.originalname}`;
+//         const destinationPath = path.join(placeFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//       updatedData.images = images; // Only update images if new files are uploaded
+//     } else {
+//       delete updatedData.images; // Do not overwrite the images field if no new files
+//     }
+
+//     const updatedPlace = await Place.findByIdAndUpdate(placeId, updatedData, {
+//       new: true,
+//     });
+
+//     if (!updatedPlace) {
+//       return res.status(404).json({ message: "Place not found" });
+//     }
+
+//     res.status(201).json({ message: "Place updated successfully", place: updatedPlace });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 // 5. Delete a place
+// exports.deletePlace = async (req, res) => {
+//   try {
+//     const { placeId } = req.params;
+
+//     const place = await Place.findByIdAndDelete(placeId);
+
+//     if (!place) {
+//       return res.status(404).json({ message: "Place not found" });
+//     }
+
+//     // If sub_place, remove from the parent's subPlaces array
+//     if (place.type === "sub_place" && place.parentPlace) {
+//       await Place.findByIdAndUpdate(place.parentPlace, {
+//         $pull: { subPlaces: place._id },
+//       });
+//     }
+
+//     // Optionally delete the folder associated with this place
+//     const placeFolder = path.join(UPLOADS_ROOT, place.name.replace(/ /g, "_"));
+//     await fs.remove(placeFolder);
+
+//     res.status(201).json({ message: "Place deleted successfully" });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 exports.deletePlace = async (req, res) => {
   try {
     const { placeId } = req.params;
-
     const place = await Place.findByIdAndDelete(placeId);
 
     if (!place) {
       return res.status(404).json({ message: "Place not found" });
     }
 
-    // If sub_place, remove from the parent's subPlaces array
+    // Delete images from Cloudinary
+    if (place.images && place.images.length > 0) {
+      for (const imageUrl of place.images) {
+        const publicId = imageUrl.split("/").slice(-1)[0].split(".")[0]; // Extract public ID
+        await cloudinary.uploader.destroy(`places/${publicId}`);
+      }
+    }
+
+    // If sub_place, remove from the parent place
     if (place.type === "sub_place" && place.parentPlace) {
       await Place.findByIdAndUpdate(place.parentPlace, {
         $pull: { subPlaces: place._id },
       });
     }
 
-    // Optionally delete the folder associated with this place
-    const placeFolder = path.join(UPLOADS_ROOT, place.name.replace(/ /g, "_"));
-    await fs.remove(placeFolder);
-
-    res.status(201).json({ message: "Place deleted successfully" });
+    res.status(200).json({ message: "Place deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
 exports.getImage = async (req, res) => {
   try {
     const { placeName, fileName } = req.query;

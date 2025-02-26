@@ -37,7 +37,7 @@ const Heritage_category = ({ heritageData }) => {
                         <div key={index} className="col-md-4 col-lg-3 mb-4">
                             <StateCard
                                 stateName={stateName}
-                                stateImage={stateImageURL} // Use the dynamically constructed image URL
+                                stateImage={imagePath} // Use the dynamically constructed image URL
                                 startingPrice={startingPrice}
                                 cityCount={stateData.tourPlanCount} // Number of tour plans
                                 packageName={tourPlans[0]?.title || 'No Packages'} // First package title

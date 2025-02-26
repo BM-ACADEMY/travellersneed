@@ -64,9 +64,10 @@ app.use('/api/blogs',blogRoutes)
 
 // Static folders for uploaded files
 app.use("/uploads", express.static("uploads/packages"));
+app.use("/uploads", express.static("uploads/addresses"));
 app.use("/uploads", express.static("uploads/places"));
 app.use("/uploads", express.static("uploads/tourPlans"));
-app.use("/uploads", express.static("uploads/themes")); 
+app.use("/uploads", express.static("uploads/themes"));
 app.use("/uploads", express.static("uploads/state")); 
 
 // Root endpoint
@@ -75,9 +76,9 @@ app.get('/', (req, res) => {
 });
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+// });
 
 // Error handling middleware
 app.use((err, req, res, next) => {

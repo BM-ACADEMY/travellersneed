@@ -2,6 +2,7 @@ const Theme = require("../Models/themesModel");
 const fs = require("fs-extra");
 const path = require("path");
 const TourPlan = require("../Models/tourPlanModel");
+const cloudinary = require("../utils/cloudinary");
 
 const UPLOADS_ROOT = path.join(__dirname, "..", "uploads", "themes");
 
@@ -11,6 +12,8 @@ const createThemeFolder = async (themeName) => {
   await fs.ensureDir(themeFolder); // Ensure directory exists
   return themeFolder;
 };
+
+
 exports.getAllThemes = async (req, res) => {  
   try {
     const themes = await Theme.find(); // Fetches all themes from the collection
@@ -21,44 +24,87 @@ exports.getAllThemes = async (req, res) => {
   }
 };
 
+
 exports.createTheme = async (req, res) => {
   try {
+    console.log("✅ Cloudinary Object:", cloudinary); // Debugging
+    console.log("✅ Request Body:", req.body);
+    console.log("✅ Received Files:", req.files);
+
     const { name, description } = req.body;
+    if (!name) return res.status(400).json({ error: "Theme name is required" });
 
-    // Validate name
-    if (!Theme.schema.path("name").enumValues.includes(name)) {
-      return res.status(400).json({ error: `Invalid theme name: ${name}` });
-    }
-
-    // Create theme folder dynamically
-    const themeFolder = await createThemeFolder(name);
-
-    // Rename and move uploaded files
+    // Upload images to Cloudinary
     const images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const newFileName = `${Date.now()}-${file.originalname}`;
-        const destinationPath = path.join(themeFolder, newFileName);
-        await fs.move(file.path, destinationPath); // Move file to theme folder
-        images.push(path.relative(UPLOADS_ROOT, destinationPath)); // Save relative path
+        console.log("📤 Uploading:", file.originalname);
+        try {
+          const result = await cloudinary.uploader.upload(file.path, {
+            folder: `themes/${name}`,
+            public_id: `${Date.now()}-${file.originalname}`,
+            resource_type: "image",
+          });
+          console.log("✅ Cloudinary Upload Success:", result);
+          images.push(result.secure_url);
+        } catch (uploadError) {
+          console.error("❌ Cloudinary Upload Error:", uploadError);
+          return res.status(500).json({ error: "Cloudinary upload failed" });
+        }
       }
     }
 
-    // Create a new theme
-    const newTheme = new Theme({
-      name,
-      description,
-      themeImage: images,
-    });
-
+    // Save theme to MongoDB
+    const newTheme = new Theme({ name, description, themeImage: images });
     await newTheme.save();
-    res
-      .status(201)
-      .json({ message: "Theme created successfully", theme: newTheme });
+
+    res.status(201).json({ message: "Theme created successfully", theme: newTheme });
   } catch (error) {
+    console.error("❌ Error creating theme:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+// exports.createTheme = async (req, res) => {
+//   try {
+//     const { name, description } = req.body;
+
+//     // Validate name
+//     if (!Theme.schema.path("name").enumValues.includes(name)) {
+//       return res.status(400).json({ error: `Invalid theme name: ${name}` });
+//     }
+
+//     // Create theme folder dynamically
+//     const themeFolder = await createThemeFolder(name);
+
+//     // Rename and move uploaded files
+//     const images = [];
+//     if (req.files && req.files.length > 0) {
+//       for (const file of req.files) {
+//         const newFileName = `${Date.now()}-${file.originalname}`;
+//         const destinationPath = path.join(themeFolder, newFileName);
+//         await fs.move(file.path, destinationPath); // Move file to theme folder
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath)); // Save relative path
+//       }
+//     }
+
+//     // Create a new theme
+//     const newTheme = new Theme({
+//       name,
+//       description,
+//       themeImage: images,
+//     });
+
+//     await newTheme.save();
+//     res
+//       .status(201)
+//       .json({ message: "Theme created successfully", theme: newTheme });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 // 2. Get all themes
 exports.getAllThemesWithTourPlans = async (req, res) => {
   try {
@@ -76,6 +122,7 @@ exports.getAllThemesWithTourPlans = async (req, res) => {
       "heritage",
       "pilgrimage",
       "beach",
+      "adventure"
     ];
 
     const response = [];
@@ -174,27 +221,70 @@ exports.getThemeById = async (req, res) => {
   }
 };
 // 4. Update a theme by ID with new file upload
+// exports.updateTheme = async (req, res) => {
+//   try {
+//     const { themeId } = req.params;
+//     const { name, description } = req.body;
+
+//     // Validate and prepare update data
+//     const updatedData = {};
+//     if (name) updatedData.name = name;
+//     if (description) updatedData.description = description;
+
+//     // Handle file uploads
+//     if (req.files && req.files.length > 0) {
+//       // Create or ensure theme folder exists
+//       const themeFolder = await createThemeFolder(name || "default");
+//       const images = [];
+
+//       for (const file of req.files) {
+//         const newFileName = `${Date.now()}-${file.originalname}`;
+//         const destinationPath = path.join(themeFolder, newFileName);
+//         await fs.move(file.path, destinationPath); // Move file to theme folder
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath)); // Save relative path
+//       }
+
+//       // Add images to update data
+//       updatedData.themeImage = images;
+//     }
+
+//     // Update the theme in the database
+//     const updatedTheme = await Theme.findByIdAndUpdate(themeId, updatedData, {
+//       new: true, // Return the updated document
+//     });
+
+//     if (!updatedTheme) {
+//       return res.status(404).json({ message: "Theme not found" });
+//     }
+
+//     res.json({ message: "Theme updated successfully", theme: updatedTheme });
+//   } catch (error) {
+//     console.error("Error updating theme:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.updateTheme = async (req, res) => {
   try {
     const { themeId } = req.params;
     const { name, description } = req.body;
 
-    // Validate and prepare update data
+    // Prepare update data
     const updatedData = {};
     if (name) updatedData.name = name;
     if (description) updatedData.description = description;
 
-    // Handle file uploads
+    // Handle file uploads to Cloudinary
     if (req.files && req.files.length > 0) {
-      // Create or ensure theme folder exists
-      const themeFolder = await createThemeFolder(name || "default");
       const images = [];
 
       for (const file of req.files) {
-        const newFileName = `${Date.now()}-${file.originalname}`;
-        const destinationPath = path.join(themeFolder, newFileName);
-        await fs.move(file.path, destinationPath); // Move file to theme folder
-        images.push(path.relative(UPLOADS_ROOT, destinationPath)); // Save relative path
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `themes/${name || "default"}`,
+          public_id: `${Date.now()}-${file.originalname}`,
+          resource_type: "image",
+        });
+        images.push(result.secure_url);
       }
 
       // Add images to update data
@@ -203,7 +293,7 @@ exports.updateTheme = async (req, res) => {
 
     // Update the theme in the database
     const updatedTheme = await Theme.findByIdAndUpdate(themeId, updatedData, {
-      new: true, // Return the updated document
+      new: true, // Return updated document
     });
 
     if (!updatedTheme) {
@@ -212,10 +302,10 @@ exports.updateTheme = async (req, res) => {
 
     res.json({ message: "Theme updated successfully", theme: updatedTheme });
   } catch (error) {
-    console.error("Error updating theme:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 // 5. Delete a theme by ID
 exports.deleteTheme = async (req, res) => {
   try {

@@ -10,7 +10,8 @@ const PackageCard = ({ tourPlan }) => {
     itSummaryTitle,
     images = [],
     itTourPlan,
-    itPopular
+    itPopular,
+    tourCode
   } = tourPlan;
 
   // Extract tourCode and fileName from the first image path
@@ -18,13 +19,13 @@ const PackageCard = ({ tourPlan }) => {
   const VITE_GET_IMAGE_FOR_TOUR_PLAN = import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN.startsWith("http")
     ? import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN
     : `${BASE_URL}${import.meta.env.VITE_GET_IMAGE_FOR_TOUR_PLAN}`;
-  let tourCode = '';
+  // let tourCode = '';
   let fileName = '';
-  if (images.length > 0) {
-    const parts = images[0].split('\\');
-    tourCode = parts[0] || '';
-    fileName = parts[1] || '';
-  }
+  // if (images.length > 0) {
+  //   const parts = images[0].split('\\');
+  //   tourCode = parts[0] || '';
+  //   fileName = parts[1] || '';
+  // }
   const lowerCaseTourCode = tourCode.toLowerCase();
   // Construct the image URL dynamically
   const imageUrl = `${VITE_GET_IMAGE_FOR_TOUR_PLAN}?tourCode=${encodeURIComponent(
@@ -36,7 +37,8 @@ const PackageCard = ({ tourPlan }) => {
       <div className="package-card">
         <div className="package-card-image">
           <LazyLoadImage
-            src={imageUrl}
+            // src={imageUrl}
+            src={images[0]}
             alt={`Image for ${title}`}
             effect="blur"
             height="100%"

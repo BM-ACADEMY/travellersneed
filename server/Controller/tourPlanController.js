@@ -7,6 +7,8 @@ const Place = require("../Models/placeModel");
 const Address = require("../Models/addressModel");
 const UPLOADS_ROOT = path.join(__dirname, "..", "uploads", "tourPlans");
 const mongoose = require("mongoose");
+const cloudinary = require("../utils/cloudinary");
+
 // Helper function: Create dynamic folder for a tour plan
 const createTourPlanFolder = async (tourCode) => {
   const folder = path.join(UPLOADS_ROOT, tourCode);
@@ -14,6 +16,80 @@ const createTourPlanFolder = async (tourCode) => {
   return folder;
 };
 // 1. Create a new tour plan
+// exports.createTourPlan = async (req, res) => {
+//   try {
+//     const {
+//       tourCode,
+//       title,
+//       itSummaryTitle,
+//       addressId,
+//       startPlace,
+//       endPlace,
+//       duration,
+//       enableIcon,
+//       baseFare,
+//       origFare,
+//       tourType,
+//       itPopular,
+//       itTop,
+//       itTourPlan,
+//       itinerary,
+//       inclusions,
+//       exclusions,
+//       optional,
+//       themeId,
+//       // operator,
+//     } = req.body;
+
+
+//     // Create folder dynamically for the tour plan
+//     const tourPlanFolder = await createTourPlanFolder(tourCode);
+
+//     // Rename and move uploaded files
+//     const images = [];
+//     if (req.files) {
+//       for (const file of req.files) {
+//         const newFileName = `${Date.now()}-${file.originalname}`;
+//         const destinationPath = path.join(tourPlanFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//     }
+
+//     const newTourPlan = new TourPlan({
+//       tourCode,
+//       title,
+//       itSummaryTitle,
+//       addressId,
+//       startPlace,
+//       endPlace,
+//       duration,
+//       enableIcon,
+//       baseFare,
+//       origFare,
+//       tourType,
+//       itPopular,
+//       itTop,
+//       itTourPlan,
+//       // primeDestinations: JSON.parse(primeDestinations),
+//       itinerary: JSON.parse(itinerary),
+//       inclusions: JSON.parse(inclusions),
+//       exclusions: JSON.parse(exclusions),
+//       optional: JSON.parse(optional),
+//       themeId: JSON.parse(themeId),
+//       // operator: JSON.parse(operator),
+//       images,
+//     });
+
+//     await newTourPlan.save();
+//     res.status(201).json({
+//       message: "Tour plan created successfully",
+//       tourPlan: newTourPlan,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 exports.createTourPlan = async (req, res) => {
   try {
     const {
@@ -35,22 +111,17 @@ exports.createTourPlan = async (req, res) => {
       inclusions,
       exclusions,
       optional,
-      themeId,
-      // operator,
+      themeId
     } = req.body;
 
-
-    // Create folder dynamically for the tour plan
-    const tourPlanFolder = await createTourPlanFolder(tourCode);
-
-    // Rename and move uploaded files
-    const images = [];
+    // Handle Cloudinary Image Uploads
+    let images = [];
     if (req.files) {
       for (const file of req.files) {
-        const newFileName = `${Date.now()}-${file.originalname}`;
-        const destinationPath = path.join(tourPlanFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `tourPlans/${tourCode || "default"}`
+        });
+        images.push(result.secure_url); // Store Cloudinary URLs
       }
     }
 
@@ -69,25 +140,22 @@ exports.createTourPlan = async (req, res) => {
       itPopular,
       itTop,
       itTourPlan,
-      // primeDestinations: JSON.parse(primeDestinations),
       itinerary: JSON.parse(itinerary),
       inclusions: JSON.parse(inclusions),
       exclusions: JSON.parse(exclusions),
       optional: JSON.parse(optional),
       themeId: JSON.parse(themeId),
-      // operator: JSON.parse(operator),
-      images,
+      images
     });
 
     await newTourPlan.save();
-    res.status(201).json({
-      message: "Tour plan created successfully",
-      tourPlan: newTourPlan,
-    });
+    res.status(201).json({ message: "Tour plan created successfully", tourPlan: newTourPlan });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 // 2. Get all tour plans
 exports.getAllTourPlans = async (req, res) => {
   try {
@@ -122,7 +190,7 @@ exports.getAllTourPlans = async (req, res) => {
       let categoryKey = null;
 
       // Add to trending categories if address matches specific states
-      if (["Rajasthan", "Andaman"].includes(address.state)) {
+      if (["Rajasthan", "Thailand","Kerala","Pondicherry"].includes(address.state)) {
         let trendingState = trendingCategories.find(
           (trend) => trend.state === address.state
         );
@@ -692,86 +760,150 @@ exports.getItineraryByTourCode = async (req, res) => {
   }
 };
 // 4. Update a tour plan by ID
+// exports.updateTourPlan = async (req, res) => {
+//   try {
+//     const { tourPlanId } = req.params;
+//     const updatedData = req.body;
+//     // Parse and validate array fields, including `images`
+//     const arrayFields = [
+//       "itinerary",
+//       "inclusion",
+//       "exclusion",
+//       "themeId",
+//       "optional",
+//       "images",
+//     ];
+//     for (const field of arrayFields) {
+//       if (updatedData[field] && typeof updatedData[field] === "string") {
+//         try {
+//           updatedData[field] = JSON.parse(updatedData[field]);
+//           if (!Array.isArray(updatedData[field])) {
+//             return res
+//               .status(400)
+//               .json({ error: `${field} should be an array` });
+//           }
+//         } catch (parseError) {
+//           return res.status(400).json({ error: `Invalid format for ${field}` });
+//         }
+//       }
+//     }
+
+//     // Handle file uploads for images
+//     if (req.files && req.files.length > 0) {
+//       const tourPlanFolder = await createTourPlanFolder(
+//         req.body.tourCode || "default"
+//       );
+//       const uploadedImages = [];
+//       for (const file of req.files) {
+//         const newFileName = `${Date.now()}-${file.originalname}`;
+//         const destinationPath = path.join(tourPlanFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         uploadedImages.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+
+//       // Combine existing images (if any) with newly uploaded images
+//       updatedData.images = (updatedData.images || []).concat(uploadedImages);
+//     }
+
+//     // Update the tour plan in the database
+//     const updatedTourPlan = await TourPlan.findByIdAndUpdate(
+//       tourPlanId,
+//       updatedData,
+//       { new: true }
+//     );
+
+//     if (!updatedTourPlan) {
+//       return res.status(404).json({ message: "Tour plan not found" });
+//     }
+
+//     res.status(201).json({
+//       message: "Tour plan updated successfully",
+//       tourPlan: updatedTourPlan,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+// 5. Delete a tour plan by ID
+// exports.deleteTourPlan = async (req, res) => {
+//   try {
+//     const { tourPlanId } = req.params;
+
+//     const deletedTourPlan = await TourPlan.findByIdAndDelete(tourPlanId);
+
+//     if (!deletedTourPlan) {
+//       return res.status(404).json({ message: "Tour plan not found" });
+//     }
+
+//     // Optionally delete the folder associated with this tour plan
+//     const tourPlanFolder = path.join(UPLOADS_ROOT, deletedTourPlan.tourCode);
+//     await fs.remove(tourPlanFolder);
+
+//     res.status(201).json({ message: "Tour plan deleted successfully" });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.updateTourPlan = async (req, res) => {
   try {
     const { tourPlanId } = req.params;
     const updatedData = req.body;
-    // Parse and validate array fields, including `images`
-    const arrayFields = [
-      "itinerary",
-      "inclusion",
-      "exclusion",
-      "themeId",
-      "optional",
-      "images",
-    ];
+
+    // Parse and validate array fields
+    const arrayFields = ["itinerary", "inclusions", "exclusions", "optional", "themeId"];
     for (const field of arrayFields) {
       if (updatedData[field] && typeof updatedData[field] === "string") {
         try {
           updatedData[field] = JSON.parse(updatedData[field]);
-          if (!Array.isArray(updatedData[field])) {
-            return res
-              .status(400)
-              .json({ error: `${field} should be an array` });
-          }
-        } catch (parseError) {
+        } catch (error) {
           return res.status(400).json({ error: `Invalid format for ${field}` });
         }
       }
     }
 
-    // Handle file uploads for images
+    // Handle new image uploads
     if (req.files && req.files.length > 0) {
-      const tourPlanFolder = await createTourPlanFolder(
-        req.body.tourCode || "default"
-      );
-      const uploadedImages = [];
+      let uploadedImages = [];
       for (const file of req.files) {
-        const newFileName = `${Date.now()}-${file.originalname}`;
-        const destinationPath = path.join(tourPlanFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        uploadedImages.push(path.relative(UPLOADS_ROOT, destinationPath));
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `tourPlans/${req.body.tourCode || "default"}`
+        });
+        uploadedImages.push(result.secure_url);
       }
-
-      // Combine existing images (if any) with newly uploaded images
-      updatedData.images = (updatedData.images || []).concat(uploadedImages);
+      updatedData.images = uploadedImages;
     }
 
-    // Update the tour plan in the database
-    const updatedTourPlan = await TourPlan.findByIdAndUpdate(
-      tourPlanId,
-      updatedData,
-      { new: true }
-    );
+    const updatedTourPlan = await TourPlan.findByIdAndUpdate(tourPlanId, updatedData, { new: true });
 
     if (!updatedTourPlan) {
       return res.status(404).json({ message: "Tour plan not found" });
     }
 
-    res.status(201).json({
-      message: "Tour plan updated successfully",
-      tourPlan: updatedTourPlan,
-    });
+    res.status(200).json({ message: "Tour plan updated successfully", tourPlan: updatedTourPlan });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-// 5. Delete a tour plan by ID
+
 exports.deleteTourPlan = async (req, res) => {
   try {
     const { tourPlanId } = req.params;
-
     const deletedTourPlan = await TourPlan.findByIdAndDelete(tourPlanId);
 
     if (!deletedTourPlan) {
       return res.status(404).json({ message: "Tour plan not found" });
     }
 
-    // Optionally delete the folder associated with this tour plan
-    const tourPlanFolder = path.join(UPLOADS_ROOT, deletedTourPlan.tourCode);
-    await fs.remove(tourPlanFolder);
+    // Delete images from Cloudinary
+    if (deletedTourPlan.images && deletedTourPlan.images.length > 0) {
+      for (const imageUrl of deletedTourPlan.images) {
+        const publicId = imageUrl.split("/").pop().split(".")[0]; // Extract public ID
+        await cloudinary.uploader.destroy(`tourPlans/${publicId}`);
+      }
+    }
 
-    res.status(201).json({ message: "Tour plan deleted successfully" });
+    res.status(200).json({ message: "Tour plan deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

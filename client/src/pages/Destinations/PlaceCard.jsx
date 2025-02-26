@@ -63,7 +63,8 @@ const PlaceCard = ({ place, index, totalCount, onViewDetails }) => {
       {/* Place Image */}
       {place.images && place.images.length > 0 && (
         <LazyLoadImage
-          src={constructImageURL(place.images[0])} // Use the first image and construct its URL
+          // src={constructImageURL(place.images[0])}
+          src={place.images[0]}
           alt={place.name}
           className="card-img-top"
           style={{ objectFit: "cover", height: "200px" }}

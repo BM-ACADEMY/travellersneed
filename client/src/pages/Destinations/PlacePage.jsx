@@ -91,7 +91,8 @@ const PlacePage = () => {
         <div className="col-md-6">
           {placeDetails.images && placeDetails.images.length > 0 && (
             <LazyLoadImage
-              src={constructImageURL(placeDetails.images[0])}
+              // src={constructImageURL(placeDetails.images[0])}
+              src={placeDetails.images[0]}
               alt={placeDetails.name}
               style={{
                 width: "100%",

@@ -80,7 +80,8 @@ const BlogList = () => {
                 alt={blog.title}
               /> */}
               <LazyLoadImage
-                src={generateImageUrl(blog.images[0])} // Use the first image
+                // src={generateImageUrl(blog.images[0])}
+                src={blog?.images[0]}
                 className="card-img-top"
                 alt={blog.title}
               />

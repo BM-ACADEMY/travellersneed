@@ -105,8 +105,8 @@ const Places = () => {
     const normalizedPath = imagePath.replace(/\\/g, "/");
     const parts = normalizedPath.split("/");
 
-    let placeName = parts[0] || ""; // Extract the folder name as placeName
-    let fileName = parts[1] || ""; // Extract the file name
+    let placeName = parts[0] || "";
+    let fileName = parts[1] || "";
 
     // Construct the URL
     return `${FETCH_PLACE_IMAGE_URL}?placeName=${encodeURIComponent(
@@ -163,10 +163,114 @@ const Places = () => {
   }
 
  
+  // const handleSubmit = async () => {
+  //   const formDataPayload = new FormData();
+
+  //   // Append individual fields to FormData
+  //   formDataPayload.append("name", formData.name || "");
+  //   formDataPayload.append("description", formData.description || "");
+  //   formDataPayload.append("type", placeType);
+  //   formDataPayload.append("state", formData.state || "");
+  //   formDataPayload.append(
+  //     "parentPlace",
+  //     placeType === "sub_place" ? formData.parentPlace || null : null
+  //   );
+
+  //   // Convert blob URLs to files
+  //   if (formData.images && formData.images.length > 0) {
+  //     for (const image of formData.images) {
+  //       if (typeof image === "string" && image.startsWith("blob:")) {
+  //         // Convert blob URL to File
+  //         const file = await urlToFile(image, "image.jpg"); // Replace with appropriate filename
+  //         formDataPayload.append("images", file);
+  //       } else {
+  //         // Append the image directly if it's already a File object
+  //         formDataPayload.append("images", image);
+  //       }
+  //     }
+  //   }
+
+  //   // Append transport array as objects
+  //   const transportObject = {
+  //     mode: formData.mode,
+  //     from: formData.from,
+  //     end: formData.end,
+  //     transportDistance: formData.transportDistance,
+  //     duration: formData.duration,
+  //   };
+  //   formDataPayload.append("transport", JSON.stringify([transportObject]));
+
+  //   // Append nested objects (e.g., networkSettings)
+  //   formDataPayload.append(
+  //     "networkSettings",
+  //     JSON.stringify({
+  //       internetAvailability: formData.internetAvailability || "Moderate",
+  //       stdCode: formData.stdCode || "+91",
+  //       languageSpoken: formData.languageSpoken || [],
+  //       majorFestivals: formData.majorFestivals || [],
+  //       notesOrTips: formData.notesOrTips || "",
+  //     })
+  //   );
+
+  //   // Append weatherInfo
+  //   formDataPayload.append(
+  //     "weatherInfo",
+  //     JSON.stringify({
+  //       season:
+  //         formData?.season?.map((season) => ({
+  //           title: season.title,
+  //           description: season.description,
+  //         })) || [],
+  //       nearestCity: formData.nearestCity || "",
+  //       peakSeason: formData.peakSeason || "",
+  //     })
+  //   );
+
+  //   // Append other fields
+  //   formDataPayload.append(
+  //     "idealTripDuration",
+  //     formData.idealTripDuration || ""
+  //   );
+  //   formDataPayload.append("distance", formData.distance || "");
+  //   formDataPayload.append("transportOption", formData.transportOption || "");
+  //   formDataPayload.append("placeLocation", formData.placeLocation || "");
+  //   formDataPayload.append("travelTipes", formData.travelTipes || "");
+  //   formDataPayload.append("placeTitle", formData.placeTitle || "");
+  //   formDataPayload.append("placePopular", formData.placePopular || "N");
+  //   formDataPayload.append("placeTop", formData.placeTop || "N");
+  //   formDataPayload.append("mostPopular", formData.mostPopular || "N");
+  //   formDataPayload.append("mustVisit", formData.mustVisit || "N");
+
+  //   // Send the formDataPayload to the backend
+  //   try {
+  //     setStatus("");
+  //     setMessage("");
+  //     setShowAlert(false);
+  //     const response = await createPlaceData(formDataPayload);
+    
+  //     fetchFilteredPlaces();
+  //     if (response && response.status === 201) {
+  //       setStatus("success");
+  //       setMessage("Place added successfully!");
+  //       setShowAlert(true); // Show success alert
+  //     } else {
+  //       setStatus("error");
+  //       setMessage("Failed to save user!");
+  //       setShowAlert(true); // Show error alert
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating place:", error);
+  //     setStatus("error", error);
+  //     setMessage("Something went wrong!");
+  //     setShowAlert(true); // Show error alert
+  //   }
+  // };
+
+
   const handleSubmit = async () => {
     const formDataPayload = new FormData();
-
-    // Append individual fields to FormData
+  
+    // Append individual fields
     formDataPayload.append("name", formData.name || "");
     formDataPayload.append("description", formData.description || "");
     formDataPayload.append("type", placeType);
@@ -175,32 +279,20 @@ const Places = () => {
       "parentPlace",
       placeType === "sub_place" ? formData.parentPlace || null : null
     );
-
-    // Convert blob URLs to files
     if (formData.images && formData.images.length > 0) {
-      for (const image of formData.images) {
-        if (typeof image === "string" && image.startsWith("blob:")) {
-          // Convert blob URL to File
-          const file = await urlToFile(image, "image.jpg"); // Replace with appropriate filename
-          formDataPayload.append("images", file);
-        } else {
-          // Append the image directly if it's already a File object
-          formDataPayload.append("images", image);
+          for (const image of formData.images) {
+            if (typeof image === "string" && image.startsWith("blob:")) {
+              const file = await urlToFile(image, "image.jpg");
+              formDataPayload.append("images", file);
+            } else {
+              formDataPayload.append("images", image);
+            }
+          }
         }
-      }
-    }
-
-    // Append transport array as objects
-    const transportObject = {
-      mode: formData.mode,
-      from: formData.from,
-      end: formData.end,
-      transportDistance: formData.transportDistance,
-      duration: formData.duration,
-    };
-    formDataPayload.append("transport", JSON.stringify([transportObject]));
-
-    // Append nested objects (e.g., networkSettings)
+    // Append transport array
+    formDataPayload.append("transport", JSON.stringify(formData.transports || []));
+  
+    // Append other nested objects
     formDataPayload.append(
       "networkSettings",
       JSON.stringify({
@@ -211,61 +303,47 @@ const Places = () => {
         notesOrTips: formData.notesOrTips || "",
       })
     );
-
-    // Append weatherInfo
+  
     formDataPayload.append(
       "weatherInfo",
       JSON.stringify({
-        season:
-          formData?.season?.map((season) => ({
-            title: season.title,
-            description: season.description,
-          })) || [],
+        season: formData?.season?.map((season) => ({
+          title: season.title,
+          description: season.description,
+        })) || [],
         nearestCity: formData.nearestCity || "",
         peakSeason: formData.peakSeason || "",
       })
     );
-
-    // Append other fields
-    formDataPayload.append(
-      "idealTripDuration",
-      formData.idealTripDuration || ""
-    );
-    formDataPayload.append("distance", formData.distance || "");
-    formDataPayload.append("transportOption", formData.transportOption || "");
-    formDataPayload.append("placeLocation", formData.placeLocation || "");
-    formDataPayload.append("travelTipes", formData.travelTipes || "");
+  
+    formDataPayload.append("idealTripDuration", formData.idealTripDuration || "");
     formDataPayload.append("placeTitle", formData.placeTitle || "");
     formDataPayload.append("placePopular", formData.placePopular || "N");
     formDataPayload.append("placeTop", formData.placeTop || "N");
     formDataPayload.append("mostPopular", formData.mostPopular || "N");
-    formDataPayload.append("mustVisit", formData.mustVisit || "N");
-
-    // Send the formDataPayload to the backend
+  
+    // Send formDataPayload to the backend
     try {
       setStatus("");
       setMessage("");
       setShowAlert(false);
       const response = await createPlaceData(formDataPayload);
-    
+  
       fetchFilteredPlaces();
       if (response && response.status === 201) {
         setStatus("success");
         setMessage("Place added successfully!");
-        setShowAlert(true); // Show success alert
+        setShowAlert(true);
       } else {
         setStatus("error");
         setMessage("Failed to save user!");
-        setShowAlert(true); // Show error alert
+        setShowAlert(true);
       }
     } catch (error) {
       console.error("Error creating place:", error);
-      setStatus("error", error);
-      setMessage("Something went wrong!");
-      setShowAlert(true); // Show error alert
     }
   };
-
+  
   const fetchFilteredPlaces = async () => {
     setLoading(true);
     try {
@@ -498,7 +576,7 @@ const Places = () => {
       {showAlert && (
         <AlertMessage type={status} message={message} show={showAlert} />
       )}
-      {/* Dropdown for selecting Place Type (City/Sub-city) */}
+
       <div
         style={{
           display: "flex",
@@ -506,8 +584,7 @@ const Places = () => {
           alignItems: "center",
           justifyContent: "center",
           padding: "20px",
-          background: "rgba(239, 21, 108, 0.1)", // Transparent alert-like background
-          borderRadius: "10px",
+          background: "rgba(239, 21, 108, 0.1)",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         }}
       >

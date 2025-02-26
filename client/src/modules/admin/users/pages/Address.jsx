@@ -3,7 +3,7 @@ import AddressTable from "./table/AddressTable";
 import AddressDemo from "./AddressDemo";
 import { useAddressContext } from "../../../../hooks/AddressContext";
 import axios from "axios";
-
+import AlertMessage from "../../reusableComponents/AlertMessage";
 
 import {
   deleteAddress,
@@ -28,7 +28,7 @@ const addressReducer = (state, action) => {
 
 const Address = () => {
   const { formData } = useAddressContext();
- 
+
   var BASE_URL = import.meta.env.VITE_BASE_URL;
   const [state, dispatch] = useReducer(addressReducer, {
     country: "",
@@ -41,6 +41,11 @@ const Address = () => {
     images: [],
     addressId: null,
   });
+
+  const [status, setStatus] = useState("");
+  const [message, setMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+    const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (formData) {
       dispatch({
@@ -104,13 +109,46 @@ const Address = () => {
     try {
       let response;
       if (state.addressId) {
+        setStatus("");
+        setMessage("");
+        setShowAlert(false);
+        setLoading(true);
         response = await updateAddress(state.addressId, finalFormData);
+        if ((response && response.status === 201) || response.status === 200) {
+          setLoading(false);
+          setStatus("success");
+          setMessage("Address Updated SuccessFully");
+          setShowAlert(true);
+        } else {
+          setLoading(false);
+          setStatus("error");
+          setMessage("Failed to save Address!");
+          setShowAlert(true);
+        }
       } else {
+        setStatus("");
+        setMessage("");
+        setShowAlert(false);
+        setLoading(true);
         response = await createAddress(finalFormData);
+          if ((response && response.status === 201) || response.status === 200) {
+            setLoading(false);
+            setStatus("success");
+            setMessage("Address Created SuccessFully");
+            setShowAlert(true);
+          } else {
+            setLoading(false);
+            setStatus("error");
+            setMessage("Failed to Update Address!");
+            setShowAlert(true);
+          }
       }
-     
     } catch (error) {
       console.error("Error submitting form:", error);
+      setStatus("error", error);
+      setMessage("Something went wrong!");
+      setShowAlert(true);
+      setLoading(false);
     }
   };
 
@@ -158,11 +196,28 @@ const Address = () => {
   // Handle delete
   const handleDelete = async (addressId) => {
     try {
-     
+      setStatus("");
+      setMessage("");
+      setShowAlert(false);
+      setLoading(true);
       const response = await deleteAddress(addressId.id);
-   
+      if ((response && response.status === 201) || response.status === 200) {
+        setLoading(false);
+        setStatus("success");
+        setMessage("Address Deleted SuccessFully");
+        setShowAlert(true);
+      } else {
+        setLoading(false);
+        setStatus("error");
+        setMessage("Failed to Delete Address!");
+        setShowAlert(true);
+      }
     } catch (error) {
       console.error("Error deleting address:", error);
+      setStatus("error", error);
+      setMessage("Something went wrong!");
+      setShowAlert(true);
+      setLoading(false);
     }
   };
 
@@ -197,19 +252,57 @@ const Address = () => {
     });
 
     try {
+      setStatus("");
+      setMessage("");
+      setShowAlert(false);
+      setLoading(true);
       const response = await axios.put(
         `${BASE_URL}/address/update-address/${state.addressId}`,
         finalFormData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-     
+      if ((response && response.status === 201) || response.status === 200) {
+        setLoading(false);
+        setStatus("success");
+        setMessage("Address Updated SuccessFully");
+        setShowAlert(true);
+      } else {
+        setLoading(false);
+        setStatus("error");
+        setMessage("Failed to Update Address!");
+        setShowAlert(true);
+      }
     } catch (error) {
+      setStatus("error", error);
+      setMessage("Something went wrong!");
+      setShowAlert(true);
+      setLoading(false);
       console.error("Error updating form:", error);
     }
   };
 
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          marginLeft: "5px",
+          padding: "8px",
+          backgroundColor: "#ef156c",
+          color: "white",
+          fontSize: "15px",
+          fontWeight: "bold",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
   return (
     <div className="container mt-5">
+      {showAlert && (
+        <AlertMessage type={status} message={message} show={showAlert} />
+      )}
       <h4 className="text-center mb-4" style={{ color: "#ef156c" }}>
         {state.addressId ? "Edit Address" : "Create Address"}
       </h4>

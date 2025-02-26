@@ -2,22 +2,133 @@ const Address = require("../Models/addressModel");
 const fs = require("fs-extra");
 const path = require("path");
 const TourPlan = require("../Models/tourPlanModel");
-
+const cloudinary = require("../utils/cloudinary");
 const UPLOADS_ROOT = path.join(__dirname, "..", "uploads", "addresses");
 
-// Helper function: Create a dynamic folder structure for state
-const createDynamicFolder = async (state) => {
-  const stateFolder = path.join(UPLOADS_ROOT, state.replace(/ /g, "_"));
-  await fs.ensureDir(stateFolder);
-  return stateFolder;
-};
+// // Helper function: Create a dynamic folder structure for state
+// const createDynamicFolder = async (state) => {
+//   const stateFolder = path.join(UPLOADS_ROOT, state.replace(/ /g, "_"));
+//   await fs.ensureDir(stateFolder);
+//   return stateFolder;
+// };
 
+
+
+// const UPLOADS_ROOT = path.join(__dirname, "..", "uploads", "addresses");
+
+// // Ensure the root directory exists
+// fs.ensureDirSync(UPLOADS_ROOT);
+
+// // Multer Storage Configuration
+// const storage = multer.diskStorage({
+//   destination: async (req, file, cb) => {
+//     try {
+//       const state = req.body.state || "default"; // Ensure state is provided
+//       const stateFolder = path.join(UPLOADS_ROOT, state.replace(/ /g, "_"));
+//       await fs.ensureDir(stateFolder); // Create state folder if it doesn't exist
+//       cb(null, stateFolder);
+//     } catch (error) {
+//       cb(error, null);
+//     }
+//   },
+//   filename: (req, file, cb) => {
+//     const timestamp = Date.now();
+//     const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
+//     cb(null, newFileName);
+//   },
+// });
+
+// const upload = multer({ storage });
 // 1. Create a new address with dynamic image upload
+// exports.createAddress = async (req, res) => {
+//   try {
+//     const { country, state, city, description, startingPrice, coordinates } = req.body;
+//     // Validate coordinates
+//     let parsedCoordinates;
+//     try {
+//       parsedCoordinates = typeof coordinates === "string" ? JSON.parse(coordinates) : coordinates;
+//       if (!Array.isArray(parsedCoordinates) || parsedCoordinates.length !== 2) {
+//         throw new Error("Coordinates must be an array of two numbers [latitude, longitude].");
+//       }
+//     } catch (err) {
+//       return res.status(400).json({ message: "Invalid coordinates format." });
+//     }
+
+//     // Create state folder dynamically
+//     const stateFolder = await createDynamicFolder(state);
+
+//     // Rename and move uploaded files
+//     const images = [];
+//     if (req.files) {
+//       for (const file of req.files) {
+//         const timestamp = Date.now();
+//         const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
+//         const destinationPath = path.join(stateFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//     }
+
+//     // Create a new address document
+//     const newAddress = new Address({
+//       country,
+//       state,
+//       city,
+//       description,
+//       images,
+//       startingPrice,
+//       coordinates: parsedCoordinates,
+//     });
+
+//     await newAddress.save();
+//     res.status(201).json({ message: "Address created successfully", address: newAddress });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+// exports.updateAddress = async (req, res) => {
+//   try {
+//     const { addressId } = req.params;
+//     const updatedData = req.body;
+
+//     // Fetch the current address from the database to get existing images
+//     const currentAddress = await Address.findById(addressId);
+//     if (!currentAddress) {
+//       return res.status(404).json({ message: "Address not found." });
+//     }
+
+//     // If no new files are uploaded, retain the existing images
+//     if (req.files && req.files.length > 0) {
+//       const stateFolder = await createDynamicFolder(req.body.state || "default");
+//       const images = [];
+//       for (const file of req.files) {
+//         const timestamp = Date.now();
+//         const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
+//         const destinationPath = path.join(stateFolder, newFileName);
+//         await fs.move(file.path, destinationPath);
+//         images.push(path.relative(UPLOADS_ROOT, destinationPath));
+//       }
+//       updatedData.images = images; // Update the images if new files are uploaded
+//     } else {
+//       // If no new images are provided, retain the old images
+//       updatedData.images = currentAddress.images;
+//     }
+
+//     // Update the address with the new data
+//     const updatedAddress = await Address.findByIdAndUpdate(addressId, updatedData, { new: true });
+//     if (!updatedAddress) {
+//       return res.status(404).json({ message: "Address not found." });
+//     }
+
+//     res.json({ message: "Address updated successfully", address: updatedAddress });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.createAddress = async (req, res) => {
   try {
     const { country, state, city, description, startingPrice, coordinates } = req.body;
-  
-    
 
     // Validate coordinates
     let parsedCoordinates;
@@ -30,28 +141,26 @@ exports.createAddress = async (req, res) => {
       return res.status(400).json({ message: "Invalid coordinates format." });
     }
 
-    // Create state folder dynamically
-    const stateFolder = await createDynamicFolder(state);
-
-    // Rename and move uploaded files
+    // Upload images to Cloudinary
     const images = [];
-    if (req.files) {
+    if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const timestamp = Date.now();
-        const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
-        const destinationPath = path.join(stateFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `addresses/${state || "default"}`, // Store under state folder
+          public_id: `${Date.now()}-${file.originalname}`,
+          resource_type: "image",
+        });
+        images.push(result.secure_url); // Save Cloudinary URL
       }
     }
 
-    // Create a new address document
+    // Create new Address document
     const newAddress = new Address({
       country,
       state,
       city,
       description,
-      images,
+      images, // Store Cloudinary image URLs in DB
       startingPrice,
       coordinates: parsedCoordinates,
     });
@@ -59,10 +168,55 @@ exports.createAddress = async (req, res) => {
     await newAddress.save();
     res.status(201).json({ message: "Address created successfully", address: newAddress });
   } catch (error) {
+    console.error("Error creating address:", error);
     res.status(500).json({ error: error.message });
   }
 };
+// 2️⃣ Update Address and Replace Images If New Ones Are Provided
+exports.updateAddress = async (req, res) => {
+  try {
+    const { addressId } = req.params;
+    const updatedData = req.body;
 
+    // Fetch current address
+    const currentAddress = await Address.findById(addressId);
+    if (!currentAddress) {
+      return res.status(404).json({ message: "Address not found." });
+    }
+
+    // Process new images (if uploaded)
+    if (req.files && req.files.length > 0) {
+      // Delete old images from Cloudinary
+      if (currentAddress.images && currentAddress.images.length > 0) {
+        for (const oldImage of currentAddress.images) {
+          const publicId = oldImage.split("/").pop().split(".")[0]; // Extract public ID
+          await cloudinary.uploader.destroy(`addresses/${publicId}`);
+        }
+      }
+
+      // Upload new images to Cloudinary
+      updatedData.images = [];
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `addresses/${currentAddress.state || "default"}`,
+          public_id: `${Date.now()}-${file.originalname}`,
+          resource_type: "image",
+        });
+        updatedData.images.push(result.secure_url);
+      }
+    } else {
+      updatedData.images = currentAddress.images; // Keep existing images if none uploaded
+    }
+
+    // Update Address
+    const updatedAddress = await Address.findByIdAndUpdate(addressId, updatedData, { new: true });
+
+    res.json({ message: "Address updated successfully", address: updatedAddress });
+  } catch (error) {
+    console.error("Error updating address:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // 2. Get all addresses
 exports.getAllAddresses = async (req, res) => {
@@ -266,45 +420,6 @@ exports.getAllAddressesWithCategories = async (req, res) => {
 };
 
 // 5. Update an address by ID
-exports.updateAddress = async (req, res) => {
-  try {
-    const { addressId } = req.params;
-    const updatedData = req.body;
-
-    // Fetch the current address from the database to get existing images
-    const currentAddress = await Address.findById(addressId);
-    if (!currentAddress) {
-      return res.status(404).json({ message: "Address not found." });
-    }
-
-    // If no new files are uploaded, retain the existing images
-    if (req.files && req.files.length > 0) {
-      const stateFolder = await createDynamicFolder(req.body.state || "default");
-      const images = [];
-      for (const file of req.files) {
-        const timestamp = Date.now();
-        const newFileName = `${file.fieldname}-${timestamp}${path.extname(file.originalname)}`;
-        const destinationPath = path.join(stateFolder, newFileName);
-        await fs.move(file.path, destinationPath);
-        images.push(path.relative(UPLOADS_ROOT, destinationPath));
-      }
-      updatedData.images = images; // Update the images if new files are uploaded
-    } else {
-      // If no new images are provided, retain the old images
-      updatedData.images = currentAddress.images;
-    }
-
-    // Update the address with the new data
-    const updatedAddress = await Address.findByIdAndUpdate(addressId, updatedData, { new: true });
-    if (!updatedAddress) {
-      return res.status(404).json({ message: "Address not found." });
-    }
-
-    res.json({ message: "Address updated successfully", address: updatedAddress });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 
 // 6. Delete an address by ID
@@ -312,21 +427,30 @@ exports.deleteAddress = async (req, res) => {
   try {
     const { addressId } = req.params;
 
-    // Corrected method call: findByIdAndDelete
-    const address = await Address.findByIdAndDelete(addressId);
-
+    // Find address by ID
+    const address = await Address.findById(addressId);
     if (!address) {
       return res.status(404).json({ message: "Address not found." });
     }
 
-    // Delete state folder if no other records exist for this state
-    const stateFolder = path.join(UPLOADS_ROOT, address.state.replace(/ /g, "_"));
-    const stateRecords = await Address.find({ state: address.state });
-    if (stateRecords.length === 0) {
-      await fs.remove(stateFolder);
+    // Delete images from Cloudinary
+    if (address.images && address.images.length > 0) {
+      for (const imageUrl of address.images) {
+        // Extract public_id from the URL
+        const publicId = imageUrl
+          .split("/")
+          .slice(-2)
+          .join("/")
+          .split(".")[0]; // Extracts 'folder/imageName' without extension
+
+        await cloudinary.uploader.destroy(publicId);
+      }
     }
 
-    res.json({ message: "Address deleted successfully." });
+    // Delete Address from Database
+    await Address.findByIdAndDelete(addressId);
+
+    res.json({ message: "Address and associated images deleted successfully." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -41,7 +41,7 @@ const Hillstations_category = ({hillStationsData}) => {
                 <div key={index} className="col-md-4 col-lg-2 mb-4">
                   <StateCard
                     stateName={stateDetails.stateName || state}
-                    stateImage={stateImageURL} // Use dynamically constructed URL
+                    stateImage={stateImagePath} // Use dynamically constructed URL
                     startingPrice={stateDetails.startingPrice}
                     cityCount={Object.keys(cityDetails).length}
                     packageName={firstPackage}

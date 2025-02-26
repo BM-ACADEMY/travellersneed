@@ -223,7 +223,8 @@ const TourPlansTable = ({ onEditTourPlan, successMessage }) => {
                       <tr key={place._id}>
                         <td>
                           <img
-                            src={imageUrl}
+                            // src={imageUrl}
+                            src={ place.images?.[0]}
                             alt="Tour"
                             width={50}
                             onError={(e) => (e.target.src = "placeholder.jpg")}

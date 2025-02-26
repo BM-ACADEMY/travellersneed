@@ -606,7 +606,8 @@ const generateImageUrl = (imagePath) => {
             <tr key={blog._id}>
               <td>
                 <img
-                  src={generateImageUrl(blog.images?.[0]) || "placeholder.jpg"}
+                  // src={generateImageUrl(blog.images?.[0]) || "placeholder.jpg"}
+                  src={blog.images?.[0] || "placeholder.jpg"}
                   alt={blog.title}
                   style={{ width: "100px", height: "auto" }}
                 />
@@ -676,8 +677,12 @@ const generateImageUrl = (imagePath) => {
             <>
               <div className="text-center mb-3">
                 <img
+                  // src={
+                  //   generateImageUrl(currentBlog.images?.[0]) ||
+                  //   "placeholder.jpg"
+                  // }
                   src={
-                    generateImageUrl(currentBlog.images?.[0]) ||
+                    currentBlog.images?.[0] ||
                     "placeholder.jpg"
                   }
                   alt={currentBlog.title}
@@ -698,8 +703,12 @@ const generateImageUrl = (imagePath) => {
                   <div key={city._id}>
                     <h4>{city.cityName}</h4>
                     <img
+                      // src={
+                      //   generateImageUrl(currentBlog.images[imageIndex]) ||
+                      //   "placeholder.jpg"
+                      // }
                       src={
-                        generateImageUrl(currentBlog.images[imageIndex]) ||
+                      currentBlog?.images[imageIndex] ||
                         "placeholder.jpg"
                       }
                       alt={city.cityName}

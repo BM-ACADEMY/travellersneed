@@ -29,7 +29,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
   });
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ message: "", type: "", visible: false });
-
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useUser();
 
   // Validation functions
@@ -75,11 +75,14 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      setIsLoading(true);
       const response = await axios.post(`${baseUrl}/users/login`, formData);
 
       // Use login function from context to set user globally
       login(response.data.token);
-
+      if (response) {
+        setIsLoading(false);
+      }
       setAlert({
         message: "Sign-in successful!",
         type: "success",
@@ -88,6 +91,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
 
       onClose(); // Close the dialog on successful login
     } catch (error) {
+      setIsLoading(false);
       setAlert({
         message: "Invalid credentials. Please try again.",
         type: "danger",
@@ -100,14 +104,13 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
 
   const isFormValid =
     validateEmail(formData.email) && validatePassword(formData.password);
- 
+
   const handleGoogleClick = async () => {
     const provider = new GoogleAuthProvider();
     provider.getCustomParameters({ prompt: "select_account" });
     try {
       const resource = await signInWithPopup(auth, provider);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (
@@ -194,7 +197,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    disabled={!isFormValid}
+                    disabled={!isFormValid || isLoading}
                     sx={{
                       backgroundColor: "rgba(40, 41, 65, 1)",
                       color: "white",
@@ -202,7 +205,7 @@ const Sign_in = ({ open, onClose, onSignUpClick }) => {
                       "&:disabled": { backgroundColor: "#ccc" },
                     }}
                   >
-                    Sign In
+                    {isLoading ? "Loading..." : "Sign In"}
                   </Button>
                 </Box>
               </form>

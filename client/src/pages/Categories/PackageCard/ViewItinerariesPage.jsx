@@ -32,8 +32,8 @@ const TourPlanDetails = ({ tourPlan }) => {
     const normalizedPath = imagePath.replace(/\\/g, "/");
     const parts = normalizedPath.split("/");
 
-    const placeName = parts[0] || ""; // Extract the folder name as placeName
-    const fileName = parts[1] || ""; // Extract the file name
+    const placeName = parts[0] || "";
+    const fileName = parts[1] || "";
 
     // Construct the URL
     return `${FETCH_PLACE_IMAGE_URL}?placeName=${encodeURIComponent(placeName)}&fileName=${encodeURIComponent(fileName)}`;
@@ -105,7 +105,8 @@ const TourPlanDetails = ({ tourPlan }) => {
       {/* Display the first image */}
       {images.length > 0 && (
         <LazyLoadImage
-          src={packageImageURLs(images[0])}
+          // src={packageImageURLs(images[0])}
+          src={images[0]}
           alt="Tour Package"
           style={{
             width: "100%",
@@ -188,7 +189,8 @@ const TourPlanDetails = ({ tourPlan }) => {
               >
                 {/* Left Image */}
                 <LazyLoadImage
-                  src={constructImageURL(place.images[0])}
+                  // src={constructImageURL(place.images[0])}
+                  src={place.images[0]}
                   alt={place.name}
                   className="img-fluid d-block"
                   style={{

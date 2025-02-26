@@ -229,7 +229,8 @@ const StatePage = () => {
       <div
         className="state-header"
         style={{
-          backgroundImage: `url(${stateImageURL})`,
+          // backgroundImage: `url(${stateImageURL})`,
+          backgroundImage: `url(${stateData.images?.[0]})`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           height: "400px",

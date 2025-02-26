@@ -30,7 +30,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [trendingData, setTrendingData] = useState({});
+  const [trendingData, setTrendingData] = useState([]);
   const [topDestinationsData, setTopDestinationsData] = useState({});
   const [honeymoonData, setHoneymoonData] = useState({});
   const [wildlifeData, setWildlifeData] = useState({});
@@ -124,11 +124,13 @@ const Home = () => {
       );
       const { data, trendingCategories } = response.data;
       if (data) {
-        setTrendingData(trendingCategories || []); // Trending categories data
+        setTrendingData(trendingCategories || []);
         const categoryMap = data.reduce((acc, category) => {
           acc[category.category] = category.states || [];
           return acc;
         }, {});
+        console.log(categoryMap);
+        
 
         setTopDestinationsData(categoryMap["Top_destinations"] || []);
         setHoneymoonData(categoryMap["Honeymoon"] || []);
@@ -163,9 +165,9 @@ const Home = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsModalOpen(true);
-    }, 5000); // Show modal after 3 seconds
+    }, 5000);
 
-    return () => clearTimeout(timeout); // Cleanup on unmount
+    return () => clearTimeout(timeout);
   }, []);
   useEffect(() => {
     fetchReviews();
@@ -473,6 +475,7 @@ const Home = () => {
               </button>
             </div>
           </div>
+          
           <Trending_category trendingData={trendingData} />
           <Themes_category themesData={themesData} />
           <Top_category topDestinationsData={topDestinationsData} />
