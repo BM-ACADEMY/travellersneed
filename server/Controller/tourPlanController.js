@@ -185,7 +185,7 @@ exports.getAllTourPlans = async (req, res) => {
       const themes = plan.themeId.map((theme) => theme.name.toLowerCase());
       const address = plan.addressId;
 
-      if (!address) continue; // Skip if address is missing
+      if (!address) continue;
 
       let categoryKey = null;
 
