@@ -109,7 +109,6 @@ const Home = () => {
 
       const { reviews: fetchedReviews, totalPages } = response.data;
 
-      // Update the state with fetched reviews
       setReviews((prevReviews) => [...prevReviews, ...fetchedReviews]);
       setHasMore(page < totalPages);
     } catch (error) {
