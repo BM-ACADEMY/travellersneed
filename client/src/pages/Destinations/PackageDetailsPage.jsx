@@ -190,7 +190,7 @@ const PackageDetailsPage = () => {
           <div className="overview-section">
             <div className="w-100 d-flex flex-column flex-md-row gap-5">
               {/* About Information */}
-              <div className="info-block flex-grow-1">
+              <div className="info-block col-12 col-md-6">
                 <p>
                   <strong>
                     <FontAwesomeIcon
@@ -260,7 +260,7 @@ const PackageDetailsPage = () => {
               </div>
 
               {/* Additional Information */}
-              <div className="additional-info flex-grow-1">
+              <div className="additional-info col-12 col-md-6">
                 <h5>Other Information</h5>
                 <p>
                   <strong>

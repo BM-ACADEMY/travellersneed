@@ -122,7 +122,7 @@ const PlacePage = () => {
             </li>
             <li>
               <strong style={{ color: "#ef156c" }}>Distance: </strong>
-              {placeDetails.distance || "N/A"}
+              {placeDetails.distance || "N/A"} kms
             </li>
             <li>
               <strong style={{ color: "#ef156c" }}>
