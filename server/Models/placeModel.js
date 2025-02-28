@@ -44,10 +44,10 @@ const placeSchema = new mongoose.Schema(
     images: {
       type: [String], // Array of image URLs or file paths
       default: [],
-      validate: {
-        validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
-        message: "One or more image paths are invalid",
-      },
+      // validate: {
+      //   validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
+      //   message: "One or more image paths are invalid",
+      // },
     },
     bestTimetoVisit:{type:String},
     idealTripDuration:{type:String,required:true},

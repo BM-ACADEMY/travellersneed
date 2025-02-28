@@ -19,7 +19,7 @@ const Settings = () => {
     email: "",
     phoneNumber: "",
     password: "",
-    role: [],
+    // role: [],
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -226,7 +226,7 @@ const Settings = () => {
                 </div>
 
                 {/* Role */}
-                <div className="d-flex justify-content-between align-items-center">
+                {/* <div className="d-flex justify-content-between align-items-center">
                   <label className="fs-5 text-secondary">Role:</label>
                   <OverlayTrigger
                     placement="top"
@@ -254,12 +254,12 @@ const Settings = () => {
                       ) : (
                         <span style={{ color: "#ef156c" }}>
                           {userData?.role?.join(", ") || " "}{" "}
-                          {/* Display roles as a comma-separated list */}
+                      
                         </span>
                       )}
                     </span>
                   </OverlayTrigger>
-                </div>
+                </div> */}
               </div>
             </Card.Body>
           </Card>

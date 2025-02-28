@@ -8,10 +8,10 @@
     images: {
       type: [String], 
       default: [],
-      validate: {
-        validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
-        message: "One or more image paths are invalid",
-      },
+      // validate: {
+      //   validator: (v) => v.every((url) => /^[^<>:;,?"*|]+$/.test(url)),
+      //   message: "One or more image paths are invalid",
+      // },
     },
     startingPrice: { type: Number, required: true, min: [0, "Starting price must be non-negative"] },
     coordinates: {
