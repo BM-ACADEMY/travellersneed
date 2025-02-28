@@ -101,7 +101,7 @@ exports.createPlace = async (req, res) => {
       name,
       description,
       state,
-      type, // city or sub_place
+      type,
       parentPlace,
       transport,
       networkSettings,
@@ -111,6 +111,10 @@ exports.createPlace = async (req, res) => {
       placeTop,
       mostPopular,
       idealTripDuration,
+      transportOption,
+      travelTipes,
+      placeLocation,
+      distance
     } = req.body;
 
     // Validate the type
@@ -150,6 +154,10 @@ exports.createPlace = async (req, res) => {
       placeTop,
       mostPopular,
       idealTripDuration,
+      transportOption,
+      travelTipes,
+      placeLocation,
+      distance
     });
 
     await newPlace.save();
