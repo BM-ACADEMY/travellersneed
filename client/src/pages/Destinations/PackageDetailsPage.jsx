@@ -317,7 +317,13 @@ const PackageDetailsPage = () => {
                     />
                     Notes or Tips:
                   </strong>{" "}
-                  {parentCity.networkSettings?.notesOrTips || "N/A"}
+                  {/* {parentCity.networkSettings?.notesOrTips || "N/A"} */}
+                  <div
+                dangerouslySetInnerHTML={{
+                  __html:parentCity.networkSettings?.notesOrTips  || "No tips available.",
+                }}
+                style={{ lineHeight: "1.6", marginTop: "10px" }}
+              ></div>
                 </p>
               </div>
             </div>
