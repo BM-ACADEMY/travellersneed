@@ -63,7 +63,7 @@ const Places = () => {
     placeLocation: "",
     travelTipes: "",
     transportOption: "",
-    mustVisit: "",
+    mustVisit: "N",
     placePopular: "N",
     placeTop: "N",
     mostPopular: "N",
@@ -315,13 +315,16 @@ const Places = () => {
         peakSeason: formData.peakSeason || "",
       })
     );
+    formDataPayload.append("travelTipes", formData.travelTipes || "");
+    formDataPayload.append("transportOption", formData.transportOption || "");
+    formDataPayload.append("distance", formData.distance || "");
     formDataPayload.append("bestTimetoVisit", formData.bestTimetoVisit || "");
     formDataPayload.append("idealTripDuration", formData.idealTripDuration || "");
     formDataPayload.append("placeTitle", formData.placeTitle || "");
     formDataPayload.append("placePopular", formData.placePopular || "N");
     formDataPayload.append("placeTop", formData.placeTop || "N");
     formDataPayload.append("mostPopular", formData.mostPopular || "N");
-  
+    formDataPayload.append("mustVisit", formData.mustVisit || "N");
     // Send formDataPayload to the backend
     try {
       setStatus("");
@@ -584,7 +587,7 @@ const Places = () => {
       setShowAlert(true); // Show error alert
     }
   };
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         style={{

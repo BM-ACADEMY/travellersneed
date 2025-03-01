@@ -59,6 +59,8 @@ const TourPackages = () => {
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+
+
   const steps = [
     "Basic Details",
     "Itinerary",
@@ -366,7 +368,7 @@ const TourPackages = () => {
       setStatus("");
       setMessage("");
       setShowAlert(false);
-
+      
       const response = await updateTourPlan(TourPlanId, formDataPayload);
       if (response && response.status === 201) {
         setSuccessMessage(true);
@@ -394,7 +396,23 @@ const TourPackages = () => {
     { id: "3", name: "Place C" },
     // Add more places as needed
   ];
-
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          marginLeft: "5px",
+          padding: "8px",
+          backgroundColor: "#ef156c",
+          color: "white",
+          fontSize: "15px",
+          fontWeight: "bold",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
   return (
     <div className="container mt-4">
       {showAlert && (
