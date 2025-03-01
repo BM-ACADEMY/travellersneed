@@ -88,7 +88,7 @@ const Places = () => {
   const [message, setMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [initialData, setInitialData] = useState(null);
-
+  const[isLoading,setIsLoading]=useState(false);
   var BASE_URL = import.meta.env.VITE_BASE_URL;
   const FETCH_PLACE_IMAGE_URL = import.meta.env.VITE_PLACE_IMAGE.startsWith(
     "http"
@@ -315,7 +315,7 @@ const Places = () => {
         peakSeason: formData.peakSeason || "",
       })
     );
-  
+    formDataPayload.append("bestTimetoVisit", formData.bestTimetoVisit || "");
     formDataPayload.append("idealTripDuration", formData.idealTripDuration || "");
     formDataPayload.append("placeTitle", formData.placeTitle || "");
     formDataPayload.append("placePopular", formData.placePopular || "N");
@@ -327,14 +327,17 @@ const Places = () => {
       setStatus("");
       setMessage("");
       setShowAlert(false);
+      setIsLoading(true);
       const response = await createPlaceData(formDataPayload);
   
       fetchFilteredPlaces();
       if (response && response.status === 201) {
+        setIsLoading(false);
         setStatus("success");
         setMessage("Place added successfully!");
         setShowAlert(true);
       } else {
+        setIsLoading(false);
         setStatus("error");
         setMessage("Failed to save user!");
         setShowAlert(true);
@@ -399,7 +402,7 @@ const Places = () => {
     setFormData({
       name: place.name || "",
       description: place.description || "",
-      type: place.type || "city", // Default to "city"
+      type: place.type || "city",
       state: place.state || "",
       parentPlace: place.parentPlace || "",
       subPlaces: place.subPlaces || [],
@@ -424,6 +427,8 @@ const Places = () => {
 
     setPlaceType(place.type || "city");
   };
+
+
   const handleUpdate = async () => {
 
     const formDataPayload = new FormData();
@@ -440,6 +445,7 @@ const Places = () => {
 
     // Compare fields and append if changed
     appendIfChanged("name", formData.name || "", initialData.name);
+    appendIfChanged("bestTimetoVisit", formData.bestTimetoVisit || "", initialData.bestTimetoVisit);
     appendIfChanged(
       "description",
       formData.description || "",
@@ -515,7 +521,7 @@ const Places = () => {
       setStatus("");
       setMessage("");
       setShowAlert(false);
-
+      setIsLoading(true);
       // Submit updated fields only
       const response = await updatePlaceData(placeId, formDataPayload);
      
@@ -523,15 +529,18 @@ const Places = () => {
       fetchFilteredPlaces();
 
       if (response && response.status === 201) {
+        setIsLoading(false);
         setStatus("success");
         setMessage("Place updated successfully!");
         setShowAlert(true); // Show success alert
       } else {
+        setIsLoading(false);
         setStatus("error");
         setMessage("Failed to save user!");
         setShowAlert(true); // Show error alert
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Error creating place:", error);
       setStatus("error");
       setMessage("Something went wrong!");
@@ -550,14 +559,17 @@ const Places = () => {
       setStatus("");
       setMessage("");
       setShowAlert(false);
+      setIsLoading(true);
       const response = await deletePlaceData(selectedPlace._id);
       
       fetchFilteredPlaces();
       if (response && response.status === 201) {
+        setIsLoading(false);
         setStatus("success");
         setMessage("Place Deleted SuccessFully");
         setShowAlert(true); // Show success alert
       } else {
+        setIsLoading(false);
         setStatus("error");
         setMessage("Failed to save user!");
         setShowAlert(true); // Show error alert
@@ -565,12 +577,30 @@ const Places = () => {
 
       handleCloseModal();
     } catch (error) {
+      setIsLoading(false);
       console.error("Error creating place:", error);
       setStatus("error", error);
       setMessage("Something went wrong!");
       setShowAlert(true); // Show error alert
     }
   };
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          marginLeft: "5px",
+          padding: "8px",
+          backgroundColor: "#ef156c",
+          color: "white",
+          fontSize: "15px",
+          fontWeight: "bold",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
   return (
     <div>
       {showAlert && (
